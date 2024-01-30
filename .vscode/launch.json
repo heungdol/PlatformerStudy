@@ -1,0 +1,152 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Launch ShaderTest (Debug)",
+			"request": "launch",
+			"program": "D:\\UnrealProjects\\ShaderTest\\Binaries\\Win64\\UnrealGame-Win64-Debug.exe",
+			"preLaunchTask": "ShaderTest Win64 Debug Build",
+			"args": [
+			],
+			"cwd": "D:\\UE_5.0",
+			"stopAtEntry": false,
+			"console": "externalTerminal",
+			"type": "cppvsdbg",
+			"visualizerFile": "D:\\UE_5.0\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+			"sourceFileMap": {
+				"D:\build\++UE5\Sync": "D:\\UE_5.0"
+			}
+		},
+		{
+			"name": "Launch ShaderTest (DebugGame)",
+			"request": "launch",
+			"program": "D:\\UnrealProjects\\ShaderTest\\Binaries\\Win64\\UnrealGame-Win64-DebugGame.exe",
+			"preLaunchTask": "ShaderTest Win64 DebugGame Build",
+			"args": [
+			],
+			"cwd": "D:\\UE_5.0",
+			"stopAtEntry": false,
+			"console": "externalTerminal",
+			"type": "cppvsdbg",
+			"visualizerFile": "D:\\UE_5.0\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+			"sourceFileMap": {
+				"D:\build\++UE5\Sync": "D:\\UE_5.0"
+			}
+		},
+		{
+			"name": "Launch ShaderTest (Development)",
+			"request": "launch",
+			"program": "D:\\UnrealProjects\\ShaderTest\\Binaries\\Win64\\UnrealGame.exe",
+			"preLaunchTask": "ShaderTest Win64 Development Build",
+			"args": [
+			],
+			"cwd": "D:\\UE_5.0",
+			"stopAtEntry": false,
+			"console": "externalTerminal",
+			"type": "cppvsdbg",
+			"visualizerFile": "D:\\UE_5.0\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+			"sourceFileMap": {
+				"D:\build\++UE5\Sync": "D:\\UE_5.0"
+			}
+		},
+		{
+			"name": "Launch ShaderTest (Test)",
+			"request": "launch",
+			"program": "D:\\UnrealProjects\\ShaderTest\\Binaries\\Win64\\UnrealGame-Win64-Test.exe",
+			"preLaunchTask": "ShaderTest Win64 Test Build",
+			"args": [
+			],
+			"cwd": "D:\\UE_5.0",
+			"stopAtEntry": false,
+			"console": "externalTerminal",
+			"type": "cppvsdbg",
+			"visualizerFile": "D:\\UE_5.0\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+			"sourceFileMap": {
+				"D:\build\++UE5\Sync": "D:\\UE_5.0"
+			}
+		},
+		{
+			"name": "Launch ShaderTest (Shipping)",
+			"request": "launch",
+			"program": "D:\\UnrealProjects\\ShaderTest\\Binaries\\Win64\\UnrealGame-Win64-Shipping.exe",
+			"preLaunchTask": "ShaderTest Win64 Shipping Build",
+			"args": [
+			],
+			"cwd": "D:\\UE_5.0",
+			"stopAtEntry": false,
+			"console": "externalTerminal",
+			"type": "cppvsdbg",
+			"visualizerFile": "D:\\UE_5.0\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+			"sourceFileMap": {
+				"D:\build\++UE5\Sync": "D:\\UE_5.0"
+			}
+		},
+		{
+			"name": "Launch ShaderTestEditor (Debug)",
+			"request": "launch",
+			"program": "D:\\UE_5.0\\Engine\\Binaries\\Win64\\UnrealEditor-Win64-Debug.exe",
+			"preLaunchTask": "ShaderTestEditor Win64 Debug Build",
+			"args": [
+				"D:\\UnrealProjects\\ShaderTest\\ShaderTest.uproject"
+			],
+			"cwd": "D:\\UE_5.0",
+			"stopAtEntry": false,
+			"console": "externalTerminal",
+			"type": "cppvsdbg",
+			"visualizerFile": "D:\\UE_5.0\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+			"sourceFileMap": {
+				"D:\build\++UE5\Sync": "D:\\UE_5.0"
+			}
+		},
+		{
+			"name": "Launch ShaderTestEditor (DebugGame)",
+			"request": "launch",
+			"program": "D:\\UE_5.0\\Engine\\Binaries\\Win64\\UnrealEditor-Win64-DebugGame.exe",
+			"preLaunchTask": "ShaderTestEditor Win64 DebugGame Build",
+			"args": [
+				"D:\\UnrealProjects\\ShaderTest\\ShaderTest.uproject"
+			],
+			"cwd": "D:\\UE_5.0",
+			"stopAtEntry": false,
+			"console": "externalTerminal",
+			"type": "cppvsdbg",
+			"visualizerFile": "D:\\UE_5.0\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+			"sourceFileMap": {
+				"D:\build\++UE5\Sync": "D:\\UE_5.0"
+			}
+		},
+		{
+			"name": "Launch ShaderTestEditor (Development)",
+			"request": "launch",
+			"program": "D:\\UE_5.0\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+			"preLaunchTask": "ShaderTestEditor Win64 Development Build",
+			"args": [
+				"D:\\UnrealProjects\\ShaderTest\\ShaderTest.uproject"
+			],
+			"cwd": "D:\\UE_5.0",
+			"stopAtEntry": false,
+			"console": "externalTerminal",
+			"type": "cppvsdbg",
+			"visualizerFile": "D:\\UE_5.0\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+			"sourceFileMap": {
+				"D:\build\++UE5\Sync": "D:\\UE_5.0"
+			}
+		},
+		{
+			"name": "Generate Project Files",
+			"type": "coreclr",
+			"request": "launch",
+			"program": "D:\\UE_5.0\\Engine\\Binaries\\DotNET\\UnrealBuildTool\\UnrealBuildTool",
+			"args": [
+				"-projectfiles",
+				"-vscode",
+				"-project=D:\\UnrealProjects\\ShaderTest\\ShaderTest.uproject",
+				"-game",
+				"-engine"
+			],
+			"console": "externalTerminal",
+			"stopAtEntry": false,
+			"cwd": "D:\\UE_5.0"
+		}
+	]
+}
