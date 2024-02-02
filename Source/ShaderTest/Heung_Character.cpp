@@ -4,6 +4,7 @@
 #include "Heung_Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "PlayerPlatformerState.h"
 
 // Sets default values
 AHeung_Character::AHeung_Character()
@@ -21,19 +22,26 @@ void AHeung_Character::BeginPlay()
 	UActorComponent* ActorComp = GetComponentByClass (UCharacterMovementComponent::StaticClass ());
     CharacterMovementComp = Cast <UCharacterMovementComponent> (ActorComp);
 
-    PlatformingState_Next = ECharacterPlatformingState::E_IDLE;
-    CapsuleState_Current = ECharacterCapsuleState::E_STAND;
+    // PlatformingState_Next = ECharacterPlatformingState::E_IDLE;
+    // CapsuleState_Current = ECharacterCapsuleState::E_STAND;
 
     IsDetectingHangPoint = false;
     IsDetectingCapsulePeak = false;
     IsDetectingSlidePeak = false;
-	
+    
+    PlayerPlatformerState_Current = GetPlayerPlatformerState_Idle ();
+    PlayerPlatformerState_Current->BeginState (this);
 }
 
 // Called every frame
 void AHeung_Character::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+    if (InputButtonDelay_Current > 0)
+    {
+        InputButtonDelay_Current -= DeltaTime;
+    }
 
 	UpdateKoyoteTime (DeltaTime);
     UpdateHangPoint (DeltaTime, IsDetectingHangPoint, HangPointLocation, HangPointDirection, HangPointRotation);
@@ -120,475 +128,20 @@ void AHeung_Character::UpdateKoyoteTime(float DeltaTime)
 
 void AHeung_Character::UpdateCharacterPlatformingState(float DeltaTime)
 {
-    // Renew Stage
-    if (PlatformingState_Next != ECharacterPlatformingState::E_NULL
-    && PlatformingState_Next != PlatformingState_Current)
+    if (PlayerPlatformerState_Current != NULL)
     {
-        switch (PlatformingState_Next)
+        PlayerPlatformerState_Current->TickState (this, DeltaTime, PlayerPlatformerState_Next);
+
+        if (PlayerPlatformerState_Next != NULL)
         {
-            case ECharacterPlatformingState::E_IDLE:
+            PlayerPlatformerState_Current->ExitState (this);
+            delete PlayerPlatformerState_Current;
 
-            UE_LOG(LogTemp, Display, TEXT("IDLE"));
+            PlayerPlatformerState_Current = PlayerPlatformerState_Next;
+            PlayerPlatformerState_Current->BeginState (this);
 
-            if (GetController () != NULL)
-            {
-                GetController ()->ResetIgnoreMoveInput ();
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->SetActive (true);
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->bOrientRotationToMovement = true;
-            }
-
-            break;
-            
-            case ECharacterPlatformingState::E_FALLING:
-
-            if (GetController () != NULL)
-            {
-                GetController ()->ResetIgnoreMoveInput ();
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->SetActive (true);
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->bOrientRotationToMovement = false;
-            }
-            
-            break;
-
-            case ECharacterPlatformingState::E_HANGING:
-
-            if (GetController () != NULL)
-            {
-                GetController ()->SetIgnoreMoveInput (true);
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->SetActive (false);
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->ResetMoveState ();
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->bOrientRotationToMovement = true;
-            }
-
-            SetActorLocation (HangPointLocation_Final);
-            SetActorRotation (HangPointRotation);
-
-            break;
-
-            case ECharacterPlatformingState::E_STOMP_0:
-
-            if (GetController () != NULL)
-            {
-                GetController ()->SetIgnoreMoveInput (true);
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->SetActive (false);
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->ResetMoveState ();
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->bOrientRotationToMovement = true;
-            }
-
-            StompRate_Current = StompRate_0;
-
-            break;
-
-            case ECharacterPlatformingState::E_STOMP_1:
-
-            if (GetController () != NULL)
-            {
-                GetController ()->SetIgnoreMoveInput (true);
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->SetActive (true);
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->bOrientRotationToMovement = true;
-            }
-
-            break;
-
-            case ECharacterPlatformingState::E_STOMP_2:
-
-            if (GetController () != NULL)
-            {
-                GetController ()->SetIgnoreMoveInput (true);
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->SetActive (true);
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->bOrientRotationToMovement = true;
-            }
-
-            StompRate_Current = StompRate_2;
-
-            break;
-
-            case ECharacterPlatformingState::E_BRAKE:
-
-            if (GetController () != NULL)
-            {
-                GetController ()->SetIgnoreMoveInput (true);
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->SetActive (true);
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->ResetMoveState ();
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->bOrientRotationToMovement = true;
-            }
-
-            SetActorRotation (BrakeDirection.Rotation ());
-
-            // if (CharacterMovementComp != NULL)
-            // {
-            //     LaunchCharacter (GetActorForwardVector () * BrakeXYSpeed_Max, true, false);
-            // }
-
-            BrakeRate_Current = BrakeRate;
-
-            BrakeXYSpeed_Begin = GetVelocity ().Length ();
-            BrakeXYSpeed_Begin = FMath::Min (BrakeXYSpeed_Begin, BrakeXYSpeed_Max);
-
-            break;
-
-            case ECharacterPlatformingState::E_CROUCH:
-            
-            if (GetController () != NULL)
-            {
-                GetController ()->SetIgnoreMoveInput (true);
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->SetActive (true);
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->ResetMoveState ();
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->bOrientRotationToMovement = true;
-            }
-
-            break;
-
-            case ECharacterPlatformingState::E_SLIDING:
-            
-            if (GetController () != NULL)
-            {
-                GetController ()->ResetIgnoreMoveInput ();
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->SetActive (true);
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->ResetMoveState ();
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->bOrientRotationToMovement = true;
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                LaunchCharacter (GetActorForwardVector () * MaxWalkSpeed_Sliding, true, false);
-            }
-
-            SlidingRate_Current = SlidingRate;
-
-            break;
+            PlayerPlatformerState_Next = NULL;
         }
-
-        PlatformingState_Current = PlatformingState_Next;
-        PlatformingState_Next = ECharacterPlatformingState::E_NULL;
-
-        InputButtonDelay_Current = InputButtonDelay;
-
-        SetCharacterMovementValuesByPlatformingState (PlatformingState_Current);
-        SetCapsuleHeightByPlatformingState (PlatformingState_Current);
-    }
-
-    // Update by State
-    switch (PlatformingState_Current)
-    {
-        case ECharacterPlatformingState::E_IDLE:
-
-        if (InputButton_Crouch)
-        {
-            if (GetVelocity ().Length () < CrouchMinVelocityLength)
-            {
-                PlatformingState_Next = ECharacterPlatformingState::E_CROUCH;
-            }
-            else
-            {
-                // 하드하게 설정
-                InputButton_Crouch = false;
-
-                PlatformingState_Next = ECharacterPlatformingState::E_SLIDING;
-            }
-        }
-        else if (CharacterMovementComp != NULL && CharacterMovementComp->IsFalling ())
-        {
-            PlatformingState_Next = ECharacterPlatformingState::E_FALLING;
-        }
-        else
-        {
-            FVector CurrentVelocityNormal = GetVelocity ().GetSafeNormal ();
-            FVector CurrentInputNormal = GetInputAxisDirection ();
-
-            // FVector CurrentInputNormal = FRotationMatrix (GetControlRotation ()).GetScaledAxis (EAxis::X) * InputAxis_Current.X;
-            // CurrentInputNormal += FRotationMatrix (GetControlRotation ()).GetScaledAxis (EAxis::Y) * InputAxis_Current.Y;
-            // CurrentInputNormal = CurrentInputNormal.GetSafeNormal ();
-
-            if (FVector::DotProduct (CurrentVelocityNormal, CurrentInputNormal) < BrakeDirectionDot
-            && GetVelocity ().Length () > BrakeXYSpeed_Active)
-            {
-                UE_LOG(LogTemp, Display, TEXT("BRAKE"));
-
-                BrakeDirection = CurrentVelocityNormal;
-                PlatformingState_Next = ECharacterPlatformingState::E_BRAKE;
-            }
-        }
-        // else if (FVector::DotProduct (CurrentVelocityNormal, CurrentInputNormal) < BrakeDirectionDot)
-        // {
-        //     UE_LOG(LogTemp, Display, TEXT("BRAKE"));
-        //     // PlatformingState_Next = ECharacterPlatformingState::E_BRAKE;
-        // }
-
-        break;
-        
-        case ECharacterPlatformingState::E_FALLING:
-
-        if (InputButtonDelay_Current < 0 && InputButton_Crouch)
-        {
-            // 하드하게 설정
-            InputButton_Crouch = false;
-
-            PlatformingState_Next = ECharacterPlatformingState::E_STOMP_0;
-        }
-        else if (CharacterMovementComp != NULL && !CharacterMovementComp->IsFalling ())
-        {
-            PlatformingState_Next = ECharacterPlatformingState::E_IDLE;
-        }
-        else if (CharacterMovementComp != NULL 
-        && CharacterMovementComp->IsFalling () && GetVelocity ().Z < 0
-        && IsDetectingHangPoint == true)
-        {
-            HangPointLocation_Final = HangPointLocation;
-            HangPointLocation_Final -= HangPointDirection * HangPointDetectLength_Forward;
-            HangPointLocation_Final -= FVector (0, 0, HangPointDetectLength_Height_Peak);
-
-            bool IsPassed_Loc = false;
-            bool IsPassed_Dot = false;
-
-            // // 추가 조건들
-            if (FVector::Distance (HangPointLocation_Final, FVector (0, 0, 0)) > 1)
-            {
-                IsPassed_Loc = true;
-            }
-
-            if (FVector::DotProduct (GetInputAxisDirection (), HangPointDirection) > 0.5)
-            {
-                IsPassed_Dot = true;
-            }
-
-            if (IsPassed_Loc && IsPassed_Dot)
-            {
-                PlatformingState_Next = ECharacterPlatformingState::E_HANGING;
-            }
-        }
-
-        break;
-
-        case ECharacterPlatformingState::E_HANGING:
-
-        if (InputButtonDelay_Current < 0 && InputButton_Crouch)
-        {
-            // 하드하게 설정
-            InputButton_Crouch = false;
-
-            PlatformingState_Next = ECharacterPlatformingState::E_FALLING;
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->SetActive (true);
-            }
-        }
-        else if (InputButtonDelay_Current < 0 && InputButton_Jump)
-        {
-            PlatformingState_Next = ECharacterPlatformingState::E_FALLING;
-
-            if (GetController () != NULL)
-            {
-                GetController ()->ResetIgnoreMoveInput ();
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->SetActive (true);
-            }
-
-            LaunchCharacter (FVector (0, 0, HangPointDetectLength_LaunchZVelocity), false, false);
-        }
-
-        break;
-
-        case ECharacterPlatformingState::E_STOMP_0:
-
-        StompRate_Current -= DeltaTime;
-
-        if (StompRate_Current < 0)
-        {
-            PlatformingState_Next = ECharacterPlatformingState::E_STOMP_1;
-        }
-
-        break;
-
-        case ECharacterPlatformingState::E_STOMP_1:
-
-        if (CharacterMovementComp != NULL)
-        {
-            CharacterMovementComp->ResetMoveState ();
-        }
-
-        SetActorLocation (GetActorLocation () + FVector (0, 0, -1) * StompZSpeed * DeltaTime, true);
-
-        if (CharacterMovementComp != NULL && CharacterMovementComp->IsFalling () == false)
-        {
-            PlatformingState_Next = ECharacterPlatformingState::E_STOMP_2;
-        }
-
-        break;
-
-        case ECharacterPlatformingState::E_STOMP_2:
-
-        StompRate_Current -= DeltaTime;
-
-        if (StompRate_Current < 0)
-        {
-            PlatformingState_Next = ECharacterPlatformingState::E_IDLE;
-        }
-
-        if (InputButtonDelay_Current < 0 && InputButton_Jump)
-        {
-            PlatformingState_Next = ECharacterPlatformingState::E_FALLING;
-
-            if (GetController () != NULL)
-            {
-                GetController ()->ResetIgnoreMoveInput ();
-            }
-
-            if (CharacterMovementComp != NULL)
-            {
-                CharacterMovementComp->SetActive (true);
-            }
-
-            LaunchCharacter (FVector (0, 0, StompZSpeed_Jump), false, false);
-        }
-
-        break;
-
-        case ECharacterPlatformingState::E_BRAKE:
-
-        {
-            float BrakeSpeed = FMath::Lerp (BrakeXYSpeed_Min, BrakeXYSpeed_Begin, BrakeRate_Current / BrakeRate); 
-            SetActorLocation (GetActorLocation () + BrakeDirection * BrakeSpeed * DeltaTime, true);
-        }
-
-        if (CharacterMovementComp != NULL && CharacterMovementComp->IsFalling ())
-        {
-            PlatformingState_Next = ECharacterPlatformingState::E_FALLING;
-        }
-        else if (BrakeRate_Current < 0)
-        {
-            PlatformingState_Next = ECharacterPlatformingState::E_IDLE;
-        }
-
-        BrakeRate_Current -= DeltaTime;
-
-        break;
-
-        case ECharacterPlatformingState::E_CROUCH:
-
-        if (InputButton_Crouch == false)
-        {
-            PlatformingState_Next = ECharacterPlatformingState::E_IDLE;
-        }
-
-        break;
-
-        case ECharacterPlatformingState::E_SLIDING:
-
-        SlidingRate_Current -= DeltaTime;
-
-        if (SlidingRate_Current < 0 && IsDetectingSlidePeak == false)
-        {
-            PlatformingState_Next = ECharacterPlatformingState::E_IDLE;
-        }
-
-        if (CharacterMovementComp != NULL)
-        {
-            CharacterMovementComp->ResetMoveState ();
-        }
-
-        break;
-    }
-
-    if (InputButtonDelay_Current > 0)
-    {
-        InputButtonDelay_Current -= DeltaTime;
     }
 }
 
@@ -613,14 +166,6 @@ void AHeung_Character::SetCharacterMovementValuesByPlatformingState (ECharacterP
         CharacterMovementComp->GroundFriction = GroundFriction_Common;
         CharacterMovementComp->BrakingDecelerationWalking = BrakeDecelerationWalking_Common;
         CharacterMovementComp->RotationRate = RotationRate_Common;
-
-        break;
-
-        
-        // CharacterMovementComp->MaxWalkSpeed = MaxWalkSpeed_Common;
-        // CharacterMovementComp->GroundFriction = GroundFriction_Common;
-        // CharacterMovementComp->BrakingDecelerationWalking = BrakeDecelerationWalking_Brake;
-        // CharacterMovementComp->RotationRate = RotationRate_Brake;
         
         break;
 
@@ -729,8 +274,8 @@ void AHeung_Character::SetCapsuleHeightByPlatformingState (ECharacterPlatforming
 
 void AHeung_Character::Jump()
 {
-    if (PlatformingState_Current == ECharacterPlatformingState::E_IDLE
-    || PlatformingState_Current == ECharacterPlatformingState::E_FALLING)
+    if (PlatformingStateEnum_Current == ECharacterPlatformingState::E_IDLE
+    || PlatformingStateEnum_Current == ECharacterPlatformingState::E_FALLING)
     {
         Super::Jump ();
 
@@ -805,4 +350,60 @@ void AHeung_Character::InputAction_Release_Platforming_Jump ()
 void AHeung_Character::InputAction_Release_Platforming_Crouch ()
 {
     InputButton_Crouch = false;
+}
+
+PlayerPlatformerState_Idle* AHeung_Character::GetPlayerPlatformerState_Idle ()
+{
+    return new PlayerPlatformerState_Idle 
+    (
+        CrouchMinVelocityLength,
+        BrakeXYSpeed_Active,
+        BrakeDirectionDot
+    );
+}
+
+PlayerPlatformerState_Fall* AHeung_Character::GetPlayerPlatformerState_Fall ()
+{
+    return new PlayerPlatformerState_Fall ();
+}
+
+PlayerPlatformerState_Crouch* AHeung_Character::GetPlayerPlatformerState_Crouch ()
+{
+    return new PlayerPlatformerState_Crouch ();
+}
+
+PlayerPlatformerState_Slide* AHeung_Character::GetPlayerPlatformerState_Slide ()
+{
+    return new PlayerPlatformerState_Slide (SlideRate, SlideSpeed);
+}
+
+PlayerPlatformerState_Stomp* AHeung_Character::GetPlayerPlatformerState_Stomp ()
+{
+    return new PlayerPlatformerState_Stomp 
+    (
+        StompRate_0,
+        StompRate_1,
+        StompRate_2,
+        StompRate_3,
+        StompZSpeed,
+        StompZSpeed_Jump
+    );
+}
+
+PlayerPlatformerState_Brake* AHeung_Character::GetPlayerPlatformerState_Brake ()
+{
+    return new PlayerPlatformerState_Brake 
+    (
+        BrakeRate,
+        BrakeXYSpeed_Begin,
+        BrakeXYSpeed_End
+    );
+}
+
+PlayerPlatformerState_Hang* AHeung_Character::GetPlayerPlatformerState_Hang ()
+{
+    return new PlayerPlatformerState_Hang 
+    (
+        HangPointDetectLength_LaunchZVelocity
+    );
 }

@@ -4,7 +4,7 @@
 		{
 			"name": "Launch ShaderTest (Debug)",
 			"request": "launch",
-			"program": "D:\\UnrealProjects\\ShaderTest\\Binaries\\Win64\\UnrealGame-Win64-Debug.exe",
+			"program": "D:\\UnrealProjects\\PlatformerStudy\\Binaries\\Win64\\UnrealGame-Win64-Debug.exe",
 			"preLaunchTask": "ShaderTest Win64 Debug Build",
 			"args": [
 			],
@@ -20,7 +20,7 @@
 		{
 			"name": "Launch ShaderTest (DebugGame)",
 			"request": "launch",
-			"program": "D:\\UnrealProjects\\ShaderTest\\Binaries\\Win64\\UnrealGame-Win64-DebugGame.exe",
+			"program": "D:\\UnrealProjects\\PlatformerStudy\\Binaries\\Win64\\UnrealGame-Win64-DebugGame.exe",
 			"preLaunchTask": "ShaderTest Win64 DebugGame Build",
 			"args": [
 			],
@@ -36,7 +36,7 @@
 		{
 			"name": "Launch ShaderTest (Development)",
 			"request": "launch",
-			"program": "D:\\UnrealProjects\\ShaderTest\\Binaries\\Win64\\UnrealGame.exe",
+			"program": "D:\\UnrealProjects\\PlatformerStudy\\Binaries\\Win64\\UnrealGame.exe",
 			"preLaunchTask": "ShaderTest Win64 Development Build",
 			"args": [
 			],
@@ -52,7 +52,7 @@
 		{
 			"name": "Launch ShaderTest (Test)",
 			"request": "launch",
-			"program": "D:\\UnrealProjects\\ShaderTest\\Binaries\\Win64\\UnrealGame-Win64-Test.exe",
+			"program": "D:\\UnrealProjects\\PlatformerStudy\\Binaries\\Win64\\UnrealGame-Win64-Test.exe",
 			"preLaunchTask": "ShaderTest Win64 Test Build",
 			"args": [
 			],
@@ -68,7 +68,7 @@
 		{
 			"name": "Launch ShaderTest (Shipping)",
 			"request": "launch",
-			"program": "D:\\UnrealProjects\\ShaderTest\\Binaries\\Win64\\UnrealGame-Win64-Shipping.exe",
+			"program": "D:\\UnrealProjects\\PlatformerStudy\\Binaries\\Win64\\UnrealGame-Win64-Shipping.exe",
 			"preLaunchTask": "ShaderTest Win64 Shipping Build",
 			"args": [
 			],
@@ -87,7 +87,7 @@
 			"program": "D:\\UE_5.0\\Engine\\Binaries\\Win64\\UnrealEditor-Win64-Debug.exe",
 			"preLaunchTask": "ShaderTestEditor Win64 Debug Build",
 			"args": [
-				"D:\\UnrealProjects\\ShaderTest\\ShaderTest.uproject"
+				"D:\\UnrealProjects\\PlatformerStudy\\ShaderTest.uproject"
 			],
 			"cwd": "D:\\UE_5.0",
 			"stopAtEntry": false,
@@ -104,7 +104,7 @@
 			"program": "D:\\UE_5.0\\Engine\\Binaries\\Win64\\UnrealEditor-Win64-DebugGame.exe",
 			"preLaunchTask": "ShaderTestEditor Win64 DebugGame Build",
 			"args": [
-				"D:\\UnrealProjects\\ShaderTest\\ShaderTest.uproject"
+				"D:\\UnrealProjects\\PlatformerStudy\\ShaderTest.uproject"
 			],
 			"cwd": "D:\\UE_5.0",
 			"stopAtEntry": false,
@@ -121,7 +121,7 @@
 			"program": "D:\\UE_5.0\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
 			"preLaunchTask": "ShaderTestEditor Win64 Development Build",
 			"args": [
-				"D:\\UnrealProjects\\ShaderTest\\ShaderTest.uproject"
+				"D:\\UnrealProjects\\PlatformerStudy\\ShaderTest.uproject"
 			],
 			"cwd": "D:\\UE_5.0",
 			"stopAtEntry": false,
@@ -140,7 +140,7 @@
 			"args": [
 				"-projectfiles",
 				"-vscode",
-				"-project=D:\\UnrealProjects\\ShaderTest\\ShaderTest.uproject",
+				"-project=D:\\UnrealProjects\\PlatformerStudy\\ShaderTest.uproject",
 				"-game",
 				"-engine"
 			],

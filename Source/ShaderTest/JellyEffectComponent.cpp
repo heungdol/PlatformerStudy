@@ -155,9 +155,9 @@ void UJellyEffectComponent::JellyEffectNextStep()
 
 	JellyEffectTime *= (TimePoint1 - TimePoint0);
 
-	UE_LOG(LogTemp, Display, TEXT("Gap Time: %f, Point Time0: %f, Point Time0: %f, Scale: %f %f %f"), JellyEffectTime
-	, TimePoint0, TimePoint1 
-	, JellyEffectData_CurrentScaleRatio.X, JellyEffectData_CurrentScaleRatio.Y, JellyEffectData_CurrentScaleRatio.Z);
+	// UE_LOG(LogTemp, Display, TEXT("Gap Time: %f, Point Time0: %f, Point Time0: %f, Scale: %f %f %f"), JellyEffectTime
+	// , TimePoint0, TimePoint1 
+	// , JellyEffectData_CurrentScaleRatio.X, JellyEffectData_CurrentScaleRatio.Y, JellyEffectData_CurrentScaleRatio.Z);
 	
 	GetWorld ()->GetTimerManager ().SetTimer (TimerHandle, this, &UJellyEffectComponent::JellyEffectNextStep, JellyEffectTime);
 }

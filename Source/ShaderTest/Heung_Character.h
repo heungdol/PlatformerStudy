@@ -19,6 +19,7 @@ enum class ECharacterPlatformingState : uint8
 	E_STOMP_2 = 7   		UMETA(DisplayName = "STOMP_2"),
 	E_CROUCH = 8   			UMETA(DisplayName = "CROUCH"),
 	E_BRAKE = 9   			UMETA(DisplayName = "BRAKE"),
+	E_STOMP = 10   			UMETA(DisplayName = "STOMP"),
 };
 
 UENUM(BlueprintType)
@@ -76,10 +77,7 @@ protected:
 
 	void InputAction_Release_Platforming_Jump ();
 	void InputAction_Release_Platforming_Crouch ();
-
-	void SetCharacterMovementValuesByPlatformingState (ECharacterPlatformingState State);
-	void SetCapsuleHeightByPlatformingState (ECharacterPlatformingState State);
-
+	
 	class UCharacterMovementComponent* CharacterMovementComp;
 
 	// ==========================================================================================
@@ -111,14 +109,6 @@ protected:
 
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_MOVEMENT_VALUE_WALK_BRAKE)
 	float BrakeDecelerationWalking_Common = 4000;
-
-	//
-
-	// UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_MOVEMENT_VALUE_WALK_BRAKE)
-	// FRotator RotationRate_Brake = FRotator (0, 0, 0);
-
-	// UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_MOVEMENT_VALUE_WALK_BRAKE)
-	// float BrakeDecelerationWalking_Brake = 1000;
 	
 	//
 	
@@ -159,13 +149,13 @@ protected:
 	//
 
 	UPROPERTY (VisibleAnywhere, Category = HEUNG_COMMON)
-	ECharacterPlatformingState PlatformingState_Current = ECharacterPlatformingState::E_IDLE;
-	
-	UPROPERTY (VisibleAnywhere, Category = HEUNG_COMMON)
-	ECharacterPlatformingState PlatformingState_Next = ECharacterPlatformingState::E_NULL;
+	ECharacterCapsuleState CapsuleState_Current = ECharacterCapsuleState::E_STAND;
 
 	UPROPERTY (VisibleAnywhere, Category = HEUNG_COMMON)
-	ECharacterCapsuleState CapsuleState_Current = ECharacterCapsuleState::E_STAND;
+	ECharacterPlatformingState PlatformingStateEnum_Current = ECharacterPlatformingState::E_IDLE;
+
+	class PlayerPlatformerState* PlayerPlatformerState_Current;
+	PlayerPlatformerState* PlayerPlatformerState_Next;
 
 	//
 
@@ -289,9 +279,6 @@ protected:
 	//
 
 	UFUNCTION (BlueprintImplementableEvent)
-	void UpdateUpperHandPlace_TEST (float DeltaTime, bool& IsDetect, FVector& HandLocation, FVector& HandDirection, FRotator& HandRotation);
-	
-	UFUNCTION (BlueprintImplementableEvent)
 	void UpdateHangPoint (float DeltaTime, bool& IsDetect, FVector& HandLocation, FVector& HandDirection, FRotator& HandRotation);
 	
 	UFUNCTION (BlueprintImplementableEvent)
@@ -308,40 +295,26 @@ protected:
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_BRAKE)
 	float BrakeXYSpeed_Active = 100;
 
-	// UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_BRAKE)
-	// float BrakeXYSpeed_End = 10;
-
 	UPROPERTY (VisibleAnywhere, BlueprintReadOnly, Category = HEUNG_BRAKE)
 	float BrakeXYSpeed_Begin = 300;
-
+	
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_BRAKE)
-	float BrakeXYSpeed_Max = 300;
-
-	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_BRAKE)
-	float BrakeXYSpeed_Min = 10;
+	float BrakeXYSpeed_End = 10;
 
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_BRAKE)
 	float BrakeRate = 0.5;
-
-	UPROPERTY (VisibleAnywhere, BlueprintReadOnly, Category = HEUNG_BRAKE)
-	float BrakeRate_Current = 0;
 
 	UPROPERTY (VisibleAnywhere, BlueprintReadOnly, Category = HEUNG_BRAKE)
 	FVector BrakeDirection = FVector (1, 0, 0);
 
 	// ==========================================================================================
 
-	UPROPERTY (VisibleANywhere, Category = HEUNG_SLIDE)
-	float SlidingRate_Current = 0.5;
 	
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_SLIDE)
-	float SlidingRate = 0.5;
-
-	// UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_SLIDE)
-	// float InputButtonDelay_Sliding = 0.05;
-
-	// UPROPERTY (VisibleANywhere, Category = HEUNG_SLIDE)
-	// float InputButtonDelay_Sliding_Current = 0.2;
+	float SlideRate = 0.5;
+	
+	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_SLIDE)
+	float SlideSpeed = 1000;
 
 	// ==========================================================================================
 
@@ -349,15 +322,18 @@ protected:
 	float CrouchMinVelocityLength = 10;
 	
 	// ==========================================================================================
-	
-	UPROPERTY (VisibleANywhere, Category = HEUNG_STOMP)
-	float StompRate_Current = 0.3;
 
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_STOMP)
 	float StompRate_0 = 0.3;
 
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_STOMP)
-	float StompRate_2 = 0.5;
+	float StompRate_1 = 10;
+
+	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_STOMP)
+	float StompRate_2 = 0.2;
+
+	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_STOMP)
+	float StompRate_3 = 0.3;
 
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_STOMP)
 	float StompZSpeed = 2000;
@@ -376,12 +352,41 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	// ======================================================================
+	UFUNCTION ()
+	void ResetInputButtonDelay ()
+	{
+		InputButtonDelay_Current = InputButtonDelay;
+	}
+
+	UFUNCTION ()
+	bool GetIsInputButtonAble () const
+	{
+		return (InputButtonDelay_Current < 0);
+	}
+
+	// ======================================================================
 	
 	UFUNCTION (BlueprintPure)
 	bool GetIsDetectCapsulePeak () const
 	{
 		return IsDetectingCapsulePeak && (FVector::DotProduct (FVector (0, 0, -1), DetectCapsulePeakNormal) > DetectCapsulePeakNormalDot);
 	}
+
+	UFUNCTION (BlueprintPure)
+	bool GetIsDetectSlidePeak () const
+	{
+		return IsDetectingSlidePeak;
+	}
+
+	UFUNCTION (BlueprintPure)
+	bool GetIsDetectHangPoint () const
+	{
+		return IsDetectingHangPoint;
+	}
+
+	// ======================================================================
 
 	UFUNCTION (BlueprintPure)
 	FVector GetVelocityDirection () const
@@ -428,4 +433,79 @@ public:
 
 		return Ret;
 	}
+
+	UFUNCTION (BlueprintPure)
+	FVector GetHangPointLocation_Final ()
+	{
+		HangPointLocation_Final = HangPointLocation;
+        HangPointLocation_Final -= HangPointDirection * HangPointDetectLength_Forward;
+        HangPointLocation_Final -= FVector (0, 0, HangPointDetectLength_Height_Peak);
+	
+		return HangPointLocation_Final;
+	}
+
+	UFUNCTION (BlueprintPure)
+	FRotator GetHangPointRotation ()
+	{
+		return HangPointRotation;
+	}
+
+	// ======================================================================
+
+	UFUNCTION ()
+	bool GetInputButton_Jump () const
+	{
+		return InputButton_Jump;
+	}
+
+	UFUNCTION ()
+	bool GetInputButton_Crouch () const
+	{
+		return InputButton_Crouch;
+	}
+
+	UFUNCTION ()
+	void SetInputButton_Jump (bool b)
+	{
+		InputButton_Jump = b;
+	}
+
+	UFUNCTION ()
+	void SetInputButton_Crouch (bool b)
+	{
+		InputButton_Crouch = b;
+	}
+
+	// ======================================================================
+
+	UFUNCTION ()
+	void SetCharacterPlatformingState (ECharacterPlatformingState E)
+	{
+		PlatformingStateEnum_Current = E;
+	}
+
+	UFUNCTION ()
+	ECharacterPlatformingState GetCharacterPlatformingState () const
+	{
+		return PlatformingStateEnum_Current;
+	}
+
+	// ======================================================================
+
+	UFUNCTION ()
+	void SetCharacterMovementValuesByPlatformingState (ECharacterPlatformingState State);
+	
+	UFUNCTION ()
+	void SetCapsuleHeightByPlatformingState (ECharacterPlatformingState State);
+
+
+	// ===================================================================
+
+	class PlayerPlatformerState_Idle* GetPlayerPlatformerState_Idle ();
+	class PlayerPlatformerState_Fall* GetPlayerPlatformerState_Fall ();
+	class PlayerPlatformerState_Crouch* GetPlayerPlatformerState_Crouch ();
+	class PlayerPlatformerState_Slide* GetPlayerPlatformerState_Slide ();
+	class PlayerPlatformerState_Stomp* GetPlayerPlatformerState_Stomp ();
+	class PlayerPlatformerState_Brake* GetPlayerPlatformerState_Brake ();
+	class PlayerPlatformerState_Hang* GetPlayerPlatformerState_Hang ();
 };

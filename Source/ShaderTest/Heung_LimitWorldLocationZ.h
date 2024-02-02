@@ -30,7 +30,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float LimitRange = 500;
+	float LimitRange = 150;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float LimitLocationZ_Offset = 80;
