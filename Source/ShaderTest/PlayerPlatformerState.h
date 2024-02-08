@@ -9,7 +9,7 @@
  */
 
 class AHeung_Character;
-enum class ECharacterPlatformingState : uint8;
+enum class EHeung_PlatformerState_Enum : uint8;
 
 class PlayerPlatformerState
 {

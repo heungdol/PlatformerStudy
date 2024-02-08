@@ -7,13 +7,13 @@
 #include "Heung_Character.generated.h"
 
 UENUM(BlueprintType)
-enum class ECharacterPlatformingState : uint8
+enum class EHeung_PlatformerState_Enum : uint8
 {
 	E_NULL = 0				UMETA(DisplayName = "NULL"),
 	E_IDLE = 1   			UMETA(DisplayName = "IDLE"),
-	E_FALLING = 2   		UMETA(DisplayName = "FALLING"),
-	E_HANGING = 3			UMETA(DisplayName = "HANGING"),
-	E_SLIDING = 4   		UMETA(DisplayName = "SLIDING"),
+	E_FALL = 2   			UMETA(DisplayName = "FALL"),
+	E_HANG = 3				UMETA(DisplayName = "HANG"),
+	E_SLIDE = 4   			UMETA(DisplayName = "SLIDE"),
 	E_STOMP_0 = 5   		UMETA(DisplayName = "STOMP_0"),
 	E_STOMP_1 = 6   		UMETA(DisplayName = "STOMP_1"),
 	E_STOMP_2 = 7   		UMETA(DisplayName = "STOMP_2"),
@@ -23,12 +23,12 @@ enum class ECharacterPlatformingState : uint8
 };
 
 UENUM(BlueprintType)
-enum class ECharacterCapsuleState : uint8
+enum class EHeung_CapsuleState_Enum : uint8
 {
 	E_NULL = 0				UMETA(DisplayName = "NULL"),
 	E_STAND = 1   			UMETA(DisplayName = "STAND"),
 	E_CROUCH = 2   			UMETA(DisplayName = "CROUCH"),
-	E_FALLING = 3   		UMETA(DisplayName = "FALLING"),
+	E_FALL = 3   			UMETA(DisplayName = "FALL"),
 };
 
 UCLASS()
@@ -150,10 +150,10 @@ protected:
 	//
 
 	UPROPERTY (VisibleAnywhere, Category = HEUNG_COMMON)
-	ECharacterCapsuleState CapsuleState_Current = ECharacterCapsuleState::E_STAND;
+	EHeung_CapsuleState_Enum CapsuleState_Current = EHeung_CapsuleState_Enum::E_STAND;
 
 	UPROPERTY (VisibleAnywhere, Category = HEUNG_COMMON)
-	ECharacterPlatformingState PlatformingStateEnum_Current = ECharacterPlatformingState::E_IDLE;
+	EHeung_PlatformerState_Enum PlatformingStateEnum_Current = EHeung_PlatformerState_Enum::E_IDLE;
 
 	TWeakPtr <class PlayerPlatformerState> PlayerPlatformerState_Current;
 	TWeakPtr <PlayerPlatformerState> PlayerPlatformerState_Next;
@@ -548,13 +548,13 @@ public:
 	// ======================================================================
 
 	UFUNCTION ()
-	void SetCharacterPlatformingState (ECharacterPlatformingState E)
+	void SetCharacterPlatformingState (EHeung_PlatformerState_Enum E)
 	{
 		PlatformingStateEnum_Current = E;
 	}
 
 	UFUNCTION ()
-	ECharacterPlatformingState GetCharacterPlatformingState () const
+	EHeung_PlatformerState_Enum GetCharacterPlatformingState () const
 	{
 		return PlatformingStateEnum_Current;
 	}
@@ -562,10 +562,10 @@ public:
 	// ======================================================================
 
 	UFUNCTION ()
-	void SetCharacterMovementValuesByPlatformingState (ECharacterPlatformingState State);
+	void SetCharacterMovementValuesByPlatformingState (EHeung_PlatformerState_Enum State);
 	
 	UFUNCTION ()
-	void SetCapsuleHeightByPlatformingState (ECharacterPlatformingState State);
+	void SetCapsuleHeightByPlatformingState (EHeung_PlatformerState_Enum State);
 
 	// ===================================================================
 

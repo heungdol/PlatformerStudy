@@ -18,9 +18,9 @@ void PlayerPlatformerState_Idle::BeginState (AHeung_Character* Character)
 
     Character->ResetInputButtonDelay ();
 
-    Character->SetCharacterPlatformingState (ECharacterPlatformingState::E_IDLE);
-    Character->SetCharacterMovementValuesByPlatformingState (ECharacterPlatformingState::E_IDLE);
-    Character->SetCapsuleHeightByPlatformingState (ECharacterPlatformingState::E_IDLE);
+    Character->SetCharacterPlatformingState (EHeung_PlatformerState_Enum::E_IDLE);
+    Character->SetCharacterMovementValuesByPlatformingState (EHeung_PlatformerState_Enum::E_IDLE);
+    Character->SetCapsuleHeightByPlatformingState (EHeung_PlatformerState_Enum::E_IDLE);
 
     if (Character->GetController () != NULL)
     {
@@ -88,9 +88,9 @@ void PlayerPlatformerState_Fall::BeginState (AHeung_Character* Character)
 
     Character->ResetInputButtonDelay ();
 
-    Character->SetCharacterPlatformingState (ECharacterPlatformingState::E_FALLING);
-    Character->SetCharacterMovementValuesByPlatformingState (ECharacterPlatformingState::E_FALLING);
-    Character->SetCapsuleHeightByPlatformingState (ECharacterPlatformingState::E_FALLING);
+    Character->SetCharacterPlatformingState (EHeung_PlatformerState_Enum::E_FALL);
+    Character->SetCharacterMovementValuesByPlatformingState (EHeung_PlatformerState_Enum::E_FALL);
+    Character->SetCapsuleHeightByPlatformingState (EHeung_PlatformerState_Enum::E_FALL);
 
     if (Character->GetController () != NULL)
     {
@@ -188,9 +188,9 @@ void PlayerPlatformerState_Crouch::BeginState(AHeung_Character* Character)
 
     Character->ResetInputButtonDelay ();
 
-    Character->SetCharacterPlatformingState (ECharacterPlatformingState::E_CROUCH);
-    Character->SetCharacterMovementValuesByPlatformingState (ECharacterPlatformingState::E_CROUCH);
-    Character->SetCapsuleHeightByPlatformingState (ECharacterPlatformingState::E_CROUCH);
+    Character->SetCharacterPlatformingState (EHeung_PlatformerState_Enum::E_CROUCH);
+    Character->SetCharacterMovementValuesByPlatformingState (EHeung_PlatformerState_Enum::E_CROUCH);
+    Character->SetCapsuleHeightByPlatformingState (EHeung_PlatformerState_Enum::E_CROUCH);
 
     if (Character->GetController () != NULL)
     {
@@ -247,9 +247,9 @@ void PlayerPlatformerState_Slide::BeginState(AHeung_Character* Character)
 
     Character->ResetInputButtonDelay ();
 
-    Character->SetCharacterPlatformingState (ECharacterPlatformingState::E_SLIDING);
-    Character->SetCharacterMovementValuesByPlatformingState (ECharacterPlatformingState::E_SLIDING);
-    Character->SetCapsuleHeightByPlatformingState (ECharacterPlatformingState::E_SLIDING);
+    Character->SetCharacterPlatformingState (EHeung_PlatformerState_Enum::E_SLIDE);
+    Character->SetCharacterMovementValuesByPlatformingState (EHeung_PlatformerState_Enum::E_SLIDE);
+    Character->SetCapsuleHeightByPlatformingState (EHeung_PlatformerState_Enum::E_SLIDE);
 
     Character->SetInputButton_Crouch (false);
 
@@ -324,9 +324,9 @@ void PlayerPlatformerState_Stomp::BeginState(AHeung_Character* Character)
 
     Character->ResetInputButtonDelay ();
 
-    Character->SetCharacterPlatformingState (ECharacterPlatformingState::E_STOMP);
-    Character->SetCharacterMovementValuesByPlatformingState (ECharacterPlatformingState::E_STOMP);
-    Character->SetCapsuleHeightByPlatformingState (ECharacterPlatformingState::E_STOMP);
+    Character->SetCharacterPlatformingState (EHeung_PlatformerState_Enum::E_STOMP);
+    Character->SetCharacterMovementValuesByPlatformingState (EHeung_PlatformerState_Enum::E_STOMP);
+    Character->SetCapsuleHeightByPlatformingState (EHeung_PlatformerState_Enum::E_STOMP);
 
     Character->SetInputButton_Crouch (false);
 

@@ -151,7 +151,7 @@ void AHeung_Character::UpdateCharacterPlatformingState(float DeltaTime)
     }
 }
 
-void AHeung_Character::SetCharacterMovementValuesByPlatformingState (ECharacterPlatformingState State)
+void AHeung_Character::SetCharacterMovementValuesByPlatformingState (EHeung_PlatformerState_Enum State)
 {
     if (CharacterMovementComp == NULL)
     {
@@ -160,13 +160,14 @@ void AHeung_Character::SetCharacterMovementValuesByPlatformingState (ECharacterP
 
     switch (State)
     {
-        case ECharacterPlatformingState::E_IDLE:
-        case ECharacterPlatformingState::E_FALLING:
-        case ECharacterPlatformingState::E_HANGING:
-        case ECharacterPlatformingState::E_STOMP_0:
-        case ECharacterPlatformingState::E_STOMP_1:
-        case ECharacterPlatformingState::E_STOMP_2:
-        case ECharacterPlatformingState::E_BRAKE:
+        case EHeung_PlatformerState_Enum::E_IDLE:
+        case EHeung_PlatformerState_Enum::E_FALL:
+        case EHeung_PlatformerState_Enum::E_HANG:
+        case EHeung_PlatformerState_Enum::E_STOMP_0:
+        case EHeung_PlatformerState_Enum::E_STOMP_1:
+        case EHeung_PlatformerState_Enum::E_STOMP_2:
+        case EHeung_PlatformerState_Enum::E_BRAKE:
+        case EHeung_PlatformerState_Enum::E_STOMP:
 
         CharacterMovementComp->MaxWalkSpeed = MaxWalkSpeed_Common;
         CharacterMovementComp->GroundFriction = GroundFriction_Common;
@@ -175,7 +176,7 @@ void AHeung_Character::SetCharacterMovementValuesByPlatformingState (ECharacterP
         
         break;
 
-        case ECharacterPlatformingState::E_CROUCH:
+        case EHeung_PlatformerState_Enum::E_CROUCH:
 
         CharacterMovementComp->MaxWalkSpeed = MaxWalkSpeed_Crouch;
         CharacterMovementComp->GroundFriction = GroundFriction_Crouch;
@@ -184,7 +185,7 @@ void AHeung_Character::SetCharacterMovementValuesByPlatformingState (ECharacterP
 
         break;
 
-        case ECharacterPlatformingState::E_SLIDING:
+        case EHeung_PlatformerState_Enum::E_SLIDE:
 
         CharacterMovementComp->MaxWalkSpeed = MaxWalkSpeed_Sliding;
         CharacterMovementComp->GroundFriction = GroundFriction_Sliding;
@@ -195,7 +196,7 @@ void AHeung_Character::SetCharacterMovementValuesByPlatformingState (ECharacterP
     }
 }
 
-void AHeung_Character::SetCapsuleHeightByPlatformingState (ECharacterPlatformingState State)
+void AHeung_Character::SetCapsuleHeightByPlatformingState (EHeung_PlatformerState_Enum State)
 {
     if (GetCapsuleComponent () == NULL || GetMesh () == NULL)
     {
@@ -204,75 +205,76 @@ void AHeung_Character::SetCapsuleHeightByPlatformingState (ECharacterPlatforming
 
     switch (State)
     {
-        case ECharacterPlatformingState::E_IDLE:
-        case ECharacterPlatformingState::E_HANGING:
-        case ECharacterPlatformingState::E_STOMP_0:
-        case ECharacterPlatformingState::E_STOMP_1:
-        case ECharacterPlatformingState::E_STOMP_2:
-        case ECharacterPlatformingState::E_BRAKE:
+        case EHeung_PlatformerState_Enum::E_IDLE:
+        case EHeung_PlatformerState_Enum::E_HANG:
+        case EHeung_PlatformerState_Enum::E_STOMP_0:
+        case EHeung_PlatformerState_Enum::E_STOMP_1:
+        case EHeung_PlatformerState_Enum::E_STOMP_2:
+        case EHeung_PlatformerState_Enum::E_BRAKE:
+        case EHeung_PlatformerState_Enum::E_STOMP:
 
         GetCapsuleComponent ()->SetCapsuleHalfHeight (CapsuleHeight_Common * 0.5);
         GetMesh ()->SetRelativeLocation (FVector (0, 0, SkeletalMeshHeight_Common));
 
-        if (CapsuleState_Current == ECharacterCapsuleState::E_STAND)
+        if (CapsuleState_Current == EHeung_CapsuleState_Enum::E_STAND)
         {
             SetActorLocation (GetActorLocation () + FVector (0, 0, (CapsuleHeight_Common-CapsuleHeight_Common) * 0.5));
         }
-        else if (CapsuleState_Current == ECharacterCapsuleState::E_CROUCH)
+        else if (CapsuleState_Current == EHeung_CapsuleState_Enum::E_CROUCH)
         {
             SetActorLocation (GetActorLocation () + FVector (0, 0, (CapsuleHeight_Common-CapsuleHeight_Crouch) * 0.5));
         }
-        else if (CapsuleState_Current == ECharacterCapsuleState::E_FALLING)
+        else if (CapsuleState_Current == EHeung_CapsuleState_Enum::E_FALL)
         {
             SetActorLocation (GetActorLocation () + FVector (0, 0, (CapsuleHeight_Common-CapsuleHeight_Falling) * 0.5));
         }
 
-        CapsuleState_Current = ECharacterCapsuleState::E_STAND;
+        CapsuleState_Current = EHeung_CapsuleState_Enum::E_STAND;
         
         break;
 
-        case ECharacterPlatformingState::E_FALLING:
+        case EHeung_PlatformerState_Enum::E_FALL:
 
         GetCapsuleComponent ()->SetCapsuleHalfHeight (CapsuleHeight_Falling * 0.5);
         GetMesh ()->SetRelativeLocation (FVector (0, 0, SkeletalMeshHeight_Falling));
 
-        if (CapsuleState_Current == ECharacterCapsuleState::E_STAND)
+        if (CapsuleState_Current == EHeung_CapsuleState_Enum::E_STAND)
         {
             SetActorLocation (GetActorLocation () + FVector (0, 0, (CapsuleHeight_Falling-CapsuleHeight_Common) * 0.5));
         }
-        else if (CapsuleState_Current == ECharacterCapsuleState::E_CROUCH)
+        else if (CapsuleState_Current == EHeung_CapsuleState_Enum::E_CROUCH)
         {
             SetActorLocation (GetActorLocation () + FVector (0, 0, (CapsuleHeight_Falling-CapsuleHeight_Crouch) * 0.5));
         }
-        else if (CapsuleState_Current == ECharacterCapsuleState::E_FALLING)
+        else if (CapsuleState_Current == EHeung_CapsuleState_Enum::E_FALL)
         {
             SetActorLocation (GetActorLocation () + FVector (0, 0, (CapsuleHeight_Falling-CapsuleHeight_Falling) * 0.5));
         }
 
-        CapsuleState_Current = ECharacterCapsuleState::E_FALLING;
+        CapsuleState_Current = EHeung_CapsuleState_Enum::E_FALL;
 
         break;
 
-        case ECharacterPlatformingState::E_CROUCH:
-        case ECharacterPlatformingState::E_SLIDING:
+        case EHeung_PlatformerState_Enum::E_CROUCH:
+        case EHeung_PlatformerState_Enum::E_SLIDE:
 
         GetCapsuleComponent ()->SetCapsuleHalfHeight (CapsuleHeight_Crouch * 0.5);
         GetMesh ()->SetRelativeLocation (FVector (0, 0, SkeletalMeshHeight_Crouch));
 
-        if (CapsuleState_Current == ECharacterCapsuleState::E_STAND)
+        if (CapsuleState_Current == EHeung_CapsuleState_Enum::E_STAND)
         {
             SetActorLocation (GetActorLocation () + FVector (0, 0, (CapsuleHeight_Crouch-CapsuleHeight_Common) * 0.5));
         }
-        else if (CapsuleState_Current == ECharacterCapsuleState::E_CROUCH)
+        else if (CapsuleState_Current == EHeung_CapsuleState_Enum::E_CROUCH)
         {
             SetActorLocation (GetActorLocation () + FVector (0, 0, (CapsuleHeight_Crouch-CapsuleHeight_Crouch) * 0.5));
         }
-        else if (CapsuleState_Current == ECharacterCapsuleState::E_FALLING)
+        else if (CapsuleState_Current == EHeung_CapsuleState_Enum::E_FALL)
         {
             SetActorLocation (GetActorLocation () + FVector (0, 0, (CapsuleHeight_Crouch-CapsuleHeight_Falling) * 0.5));
         }
 
-        CapsuleState_Current = ECharacterCapsuleState::E_CROUCH;
+        CapsuleState_Current = EHeung_CapsuleState_Enum::E_CROUCH;
 
         break;
     }
@@ -280,8 +282,8 @@ void AHeung_Character::SetCapsuleHeightByPlatformingState (ECharacterPlatforming
 
 void AHeung_Character::Jump()
 {
-    if (PlatformingStateEnum_Current == ECharacterPlatformingState::E_IDLE
-    || PlatformingStateEnum_Current == ECharacterPlatformingState::E_FALLING)
+    if (PlatformingStateEnum_Current == EHeung_PlatformerState_Enum::E_IDLE
+    || PlatformingStateEnum_Current == EHeung_PlatformerState_Enum::E_FALL)
     {
         Super::Jump ();
 
