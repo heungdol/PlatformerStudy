@@ -107,6 +107,11 @@ void PlayerPlatformerState_Fall::BeginState (AHeung_Character* Character)
         Character->GetCharacterMovement()->bOrientRotationToMovement = true;
     }
 
+    if (Character->GetMesh () != nullptr)
+    {
+        MeshRelativeRotation = Character->GetMesh ()->GetRelativeRotation ();
+        MeshWorldRotation = Character->GetMesh ()->GetComponentRotation ();
+    }
 }
 
 void PlayerPlatformerState_Fall::TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState) 
@@ -117,6 +122,11 @@ void PlayerPlatformerState_Fall::TickState (AHeung_Character* Character, float D
     }
 
     // UE_LOG(LogTemp, Display, TEXT("State Tick: FALL"));
+
+    if (Character->GetMesh () != nullptr)
+    {
+        Character->GetMesh ()->SetWorldRotation (MeshWorldRotation);
+    }
 
     if (Character->GetCharacterMovement ()->IsFalling () == false)
     {
@@ -155,6 +165,16 @@ void PlayerPlatformerState_Fall::TickState (AHeung_Character* Character, float D
 void PlayerPlatformerState_Fall::ExitState (AHeung_Character* Character) 
 {
     // UE_LOG(LogTemp, Display, TEXT("State Exit: FALL"));		
+
+    if (Character == nullptr)
+    {
+        return;
+    }
+
+    if (Character->GetMesh () != nullptr)
+    {
+        Character->GetMesh()->SetRelativeRotation (MeshRelativeRotation);
+    }
 }
 
 // ============================================================================================================
@@ -274,11 +294,15 @@ void PlayerPlatformerState_Slide::TickState(AHeung_Character* Character, float D
     {
         NextState = Character->GetPlayerPlatformerState_Idle ();
     }
-    // else if (Character->GetCharacterMovement () != NULL
-    // && Character->GetCharacterMovement ()->IsFalling () == true)
-    // {
-    //     NextState = Character->GetPlayerPlatformerState_Fall ();
-    // }
+    else if (Character->GetIsDetectDownward () == false)
+    {
+        NextState = Character->GetPlayerPlatformerState_Fall ();
+        
+        if (Character->GetCharacterMovement () != nullptr)
+        {
+            Character->LaunchCharacter (FVector (0, 0, SlideSpeed_Jump), false, true);
+        }
+    }
 
     SlideRate_Current -= DeltaTime;
 }
@@ -528,8 +552,8 @@ void PlayerPlatformerState_Hang::BeginState (AHeung_Character* Character)
 
     Character->ResetInputButtonDelay ();
 
-    Character->SetActorLocation (Character->GetHangPointLocation_Final ());
-    Character->SetActorRotation (Character->GetHangPointRotation ());
+    Character->AttachHangPointCompToActor ();
+
 }
 
 void PlayerPlatformerState_Hang::TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState)
@@ -539,29 +563,36 @@ void PlayerPlatformerState_Hang::TickState (AHeung_Character* Character, float D
         return;
     }
 
+    Character->SetActorLocation (Character->GetHangPointCompTransform ().GetLocation ());
+    Character->SetActorRotation (Character->GetHangPointCompTransform ().GetRotation ());
+
+    bool GoToUp = false;
+    bool GoToDown = false;
+
     if (Character->GetIsInputButtonAble () && Character->GetInputButton_Crouch () == true)
     {
-        Character->SetInputButton_Crouch (false);
-
-        if (Character->GetController () != NULL)
-        {
-            Character->GetController ()->ResetIgnoreMoveInput ();
-        }
-
-        if (Character->GetCharacterMovement() != NULL)
-        {
-            Character->GetCharacterMovement()->SetActive (true);
-        }
-
-        NextState = Character->GetPlayerPlatformerState_Fall ();
+        GoToDown = true;
     }
     else if (Character->GetIsInputButtonAble () && Character->GetInputButton_Jump () == true)
     {
-        if (Character->GetController () != NULL)
+        GoToUp = true;
+    }
+    else if (Character->GetIsDetectBackward () 
+    || Character->GetIsDetectLeftward () 
+    || Character->GetIsDetectRightward ())
+    {
+        if (Character->GetIsDetectUpward ())
         {
-            Character->GetController ()->ResetIgnoreMoveInput ();
+            GoToDown = true;
         }
+        else
+        {
+            GoToUp = true;
+        }
+    }
 
+    if (GoToUp)
+    {
         if (Character->GetCharacterMovement() != NULL)
         {
             Character->GetCharacterMovement()->SetActive (true);
@@ -571,9 +602,33 @@ void PlayerPlatformerState_Hang::TickState (AHeung_Character* Character, float D
 
         NextState = Character->GetPlayerPlatformerState_Fall ();
     }
+    else if (GoToDown)
+    {
+        Character->SetInputButton_Crouch (false);
+
+        NextState = Character->GetPlayerPlatformerState_Fall ();
+    }
 }
 
 void PlayerPlatformerState_Hang::ExitState (AHeung_Character* Character)
 {
-    
+    if (Character == nullptr)
+    {
+        return;
+    }   
+
+    Character->DetachHangPointCompToActor ();
+
+    Character->SetActorRotation (Character->GetInputAxisDirection ().Rotation ());
 }
+
+// void PlayerPlatformerState_Hang::ChangeHangPointActor (AActor* A)
+// {
+//     HangPointActor = A;
+
+//     if (HangPointActor != nullptr)
+//     {
+//         HangPointActor_WorldLocation = A->GetActorLocation ();
+//         HangPointActor_WorldRotation = A->GetActorRotation ();
+//     }
+// }

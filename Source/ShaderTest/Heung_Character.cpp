@@ -48,10 +48,11 @@ void AHeung_Character::Tick(float DeltaTime)
     }
 
 	UpdateKoyoteTime (DeltaTime);
-    UpdateHangPoint (DeltaTime, IsDetectingHangPoint, HangPointLocation, HangPointDirection, HangPointRotation);
+    UpdateHangPoint (DeltaTime, IsDetectingHangPoint, HangPointLocation, HangPointDirection, HangPointRotation);//, HangPointActor);
     UpdateCapsulePeak (DeltaTime, IsDetectingCapsulePeak, DetectCapsulePeakNormal);
     UpdateSlidePeak (DeltaTime, IsDetectingSlidePeak);
-    
+    UpdateDetectDirections (DeltaTime, IsDetectingForward, IsDetectingRightward, IsDetectingBackward, IsDetectingLeftward, IsDetectingUpward, IsDetectingDownward);
+
     UpdateCharacterPlatformingState (DeltaTime);
 }
 
@@ -398,7 +399,7 @@ TWeakPtr <PlayerPlatformerState_Slide> AHeung_Character::GetPlayerPlatformerStat
 {
     if (PlayerPlatformerStateInst_Slide == NULL)
     {
-        PlayerPlatformerStateInst_Slide = MakeShared <PlayerPlatformerState_Slide> (SlideRate, SlideSpeed);
+        PlayerPlatformerStateInst_Slide = MakeShared <PlayerPlatformerState_Slide> (SlideRate, SlideSpeed, SlideSpeed_Jump);
     }
 
     return PlayerPlatformerStateInst_Slide;
@@ -444,9 +445,49 @@ TWeakPtr <PlayerPlatformerState_Hang> AHeung_Character::GetPlayerPlatformerState
         PlayerPlatformerStateInst_Hang = MakeShared <PlayerPlatformerState_Hang> 
         (
             HangPointDetectLength_LaunchZVelocity
-            , nullptr
         );
     }
 
+    // if (HangPointActor != nullptr)
+    // {        
+    //     PlayerPlatformerStateInst_Hang->ChangeHangPointActor (HangPointActor);
+    //     UE_LOG(LogTemp, Display, TEXT("HangPoint Actor: %s"), *HangPointActor->GetName());
+    // }
+    
     return PlayerPlatformerStateInst_Hang;
+}
+
+void AHeung_Character::AttachHangPointCompToActor ()
+{
+    if (HangPointComp == nullptr 
+    || HangPointActor == nullptr)
+    {
+        return;
+    }
+
+    HangPointComp->AttachToComponent (HangPointActor->GetRootComponent (), FAttachmentTransformRules::SnapToTargetIncludingScale);
+    HangPointComp->SetWorldLocation (GetHangPointLocation_Final ());
+    HangPointComp->SetWorldRotation (GetHangPointRotation ());
+}
+
+void AHeung_Character::DetachHangPointCompToActor ()
+{
+    if (HangPointComp == nullptr)
+    {
+        return;
+    }
+
+    HangPointComp->DetachFromComponent (FDetachmentTransformRules::KeepWorldTransform);
+}
+
+FTransform AHeung_Character::GetHangPointCompTransform () const
+{
+    FTransform Ret = FTransform ();
+
+    if (HangPointComp != nullptr)
+    {
+        Ret = HangPointComp->GetComponentTransform ();
+    }
+
+    return Ret;
 }

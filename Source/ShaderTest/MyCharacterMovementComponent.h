@@ -16,7 +16,7 @@ class SHADERTEST_API UMyCharacterMovementComponent : public UCharacterMovementCo
 
 public:
 	UPROPERTY (EditAnyWhere, BlueprintReadWrite)
-	float GravityRate_Jumping = 1.3;
+	float GravityRate_Jumping = 2.9;
 
 	UPROPERTY (EditAnyWhere, BlueprintReadWrite)
 	float GravityRate_Falling = 0.8;

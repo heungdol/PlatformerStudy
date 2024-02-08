@@ -59,6 +59,10 @@ public:
 	virtual void BeginState (AHeung_Character* Character) override;
 	virtual void TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState) override;
 	virtual void ExitState (AHeung_Character* Character) override;
+
+private:
+    FRotator MeshRelativeRotation;
+    FRotator MeshWorldRotation;
 };
 
 class PlayerPlatformerState_Crouch : public PlayerPlatformerState
@@ -77,10 +81,12 @@ public:
     PlayerPlatformerState_Slide 
     (
         float SlideRate, 
-        float SlideSpeed
+        float SlideSpeed,
+        float SlideSpeed_Jump
     ) 
     : SlideRate (SlideRate)
     , SlideSpeed (SlideSpeed) 
+    , SlideSpeed_Jump (SlideSpeed_Jump)
     {}
 
     virtual void ResetState (AHeung_Character* Character) override 
@@ -97,6 +103,7 @@ private:
     
     float SlideRate;
     float SlideSpeed;
+    float SlideSpeed_Jump;
 };
 
 class PlayerPlatformerState_Stomp : public PlayerPlatformerState
@@ -178,9 +185,9 @@ private:
 class PlayerPlatformerState_Hang : public PlayerPlatformerState
 {
 public:
-    PlayerPlatformerState_Hang (float HangJumpSpeed, AActor* HangPointPlatform)
+    PlayerPlatformerState_Hang (float HangJumpSpeed)//, AActor* A)
     : HangJumpSpeed (HangJumpSpeed)
-    , HangPointPlatform (HangPointPlatform)
+    // , HangPointActor (A)
     {}
 
     virtual void ResetState (AHeung_Character* Character) override {}
@@ -189,7 +196,11 @@ public:
 	virtual void TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState) override;
 	virtual void ExitState (AHeung_Character* Character) override;
 
+    // void ChangeHangPointActor (AActor *A);
 private:
     float HangJumpSpeed;
-    AActor* HangPointPlatform;
+    // AActor* HangPointActor;
+
+    // FVector HangPointActor_WorldLocation;
+    // FRotator HangPointActor_WorldRotation;
 };

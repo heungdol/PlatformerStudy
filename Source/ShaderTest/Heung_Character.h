@@ -189,19 +189,28 @@ protected:
 	UPROPERTY (VisibleAnywhere, BlueprintReadOnly, Category = HEUNG_COMMON)
 	bool IsDetectingBackward;
 
+	UPROPERTY (VisibleAnywhere, BlueprintReadOnly, Category = HEUNG_COMMON)
+	bool IsDetectingUpward;
+
+	UPROPERTY (VisibleAnywhere, BlueprintReadOnly, Category = HEUNG_COMMON)
+	bool IsDetectingDownward;
+
 	//
 
-	UPROPERTY (VisibleAnywhere, BlueprintReadonly, Category = HEUNG_COMMON)
+	UPROPERTY (VisibleAnywhere, BlueprintReadonly, Category = HEUNG_HANG)
 	FVector HangPointLocation;
 
-	UPROPERTY (VisibleAnywhere, BlueprintReadOnly, Category = HEUNG_COMMON)
+	UPROPERTY (VisibleAnywhere, BlueprintReadOnly, Category = HEUNG_HANG)
 	FVector HangPointDirection;
 
-	UPROPERTY (VisibleAnywhere, BlueprintReadOnly, Category = HEUNG_COMMON)
+	UPROPERTY (VisibleAnywhere, BlueprintReadOnly, Category = HEUNG_HANG)
 	FRotator HangPointRotation;
 
-	UPROPERTY (VisibleAnywhere, BlueprintReadOnly, Category = HEUNG_COMMON)
+	UPROPERTY (VisibleAnywhere, BlueprintReadOnly, Category = HEUNG_HANG)
 	FVector HangPointLocation_Final;
+
+	UPROPERTY (VisibleAnywhere, BlueprintReadWrite, Category = HEUNG_HANG)
+	AActor* HangPointActor;
 
 	//
 
@@ -230,10 +239,13 @@ protected:
 	// ==========================================================================================
 
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_DETECT)
-	float DirectionDetect_Height_Chest = 150;
+	float DirectionDetect_Height_Chest = 50;
 
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_DETECT)
 	float DirectionDetect_Length = 23;
+
+	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_DETECT)
+	float DirectionDetect_Length_UpDown = 100;
 
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_DETECT)
 	float DirectionDetect_Radius = 5;
@@ -288,13 +300,16 @@ protected:
 	//
 
 	UFUNCTION (BlueprintImplementableEvent)
-	void UpdateHangPoint (float DeltaTime, bool& IsDetect, FVector& HandLocation, FVector& HandDirection, FRotator& HandRotation);
+	void UpdateHangPoint (float DeltaTime, bool& IsDetect, FVector& HandLocation, FVector& HandDirection, FRotator& HandRotation);//, AActor* HPA);
 	
 	UFUNCTION (BlueprintImplementableEvent)
 	void UpdateCapsulePeak (float DeltaTime, bool& IsDetect, FVector& Normal);
 	
 	UFUNCTION (BlueprintImplementableEvent)
 	void UpdateSlidePeak (float DeltaTime, bool& IsDetect);
+	
+	UFUNCTION (BlueprintImplementableEvent)
+	void UpdateDetectDirections (float DeltaTime, bool& Forward, bool& Rightward, bool& Backward, bool& Leftward, bool& Upward, bool& Downward);
 
 	// ==========================================================================================
 
@@ -395,6 +410,42 @@ public:
 		return IsDetectingHangPoint;
 	}
 
+	UFUNCTION (BlueprintPure)
+	bool GetIsDetectForward () const
+	{
+		return IsDetectingForward;
+	}
+	
+	UFUNCTION (BlueprintPure)
+	bool GetIsDetectBackward () const
+	{
+		return IsDetectingBackward;
+	}
+
+	UFUNCTION (BlueprintPure)
+	bool GetIsDetectLeftward () const
+	{
+		return IsDetectingLeftward;
+	}
+
+	UFUNCTION (BlueprintPure)
+	bool GetIsDetectRightward () const
+	{
+		return IsDetectingRightward;
+	}
+
+	UFUNCTION (BlueprintPure)
+	bool GetIsDetectUpward () const
+	{
+		return IsDetectingUpward;
+	}
+
+	UFUNCTION (BlueprintPure)
+	bool GetIsDetectDownward () const
+	{
+		return IsDetectingDownward;
+	}
+
 	// ======================================================================
 
 	UFUNCTION (BlueprintPure)
@@ -454,6 +505,12 @@ public:
 	}
 
 	UFUNCTION (BlueprintPure)
+	AActor* GetHangPointActor ()
+	{
+		return HangPointActor;
+	}
+
+	UFUNCTION (BlueprintPure)
 	FRotator GetHangPointRotation ()
 	{
 		return HangPointRotation;
@@ -507,6 +564,16 @@ public:
 	UFUNCTION ()
 	void SetCapsuleHeightByPlatformingState (ECharacterPlatformingState State);
 
+	// ===================================================================
+
+	UFUNCTION ()
+	void AttachHangPointCompToActor ();
+	
+	UFUNCTION ()
+	void DetachHangPointCompToActor ();
+
+	UFUNCTION ()
+	FTransform GetHangPointCompTransform () const;
 
 	// ===================================================================
 
