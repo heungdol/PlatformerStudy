@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "JellyEffectDataAsset.generated.h"
+#include "Heung_JellyEffectDataAsset.generated.h"
 
 /**
  * 
@@ -24,7 +24,7 @@ public:
 };
 
 UCLASS()
-class SHADERTEST_API UJellyEffectDataAsset : public UDataAsset
+class SHADERTEST_API UHeung_JellyEffectDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
 	

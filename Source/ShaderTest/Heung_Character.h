@@ -340,6 +340,9 @@ protected:
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_SLIDE)
 	float SlideSpeed = 1000;
 
+	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_SLIDE)
+	float SlideSpeed_Jump = 1000;
+
 	// ==========================================================================================
 
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_CROUCH)

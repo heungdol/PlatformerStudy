@@ -1,16 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "JellyEffectComponent.h"
+#include "Heung_JellyEffectComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Math/UnrealMathUtility.h"
 #include "Math/UnrealMathVectorCommon.h"
-#include "JellyEffectDataAsset.h"
+#include "Heung_JellyEffectDataAsset.h"
 
 // Sets default values for this component's properties
-UJellyEffectComponent::UJellyEffectComponent()
+UHeung_JellyEffectComponent::UHeung_JellyEffectComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
@@ -21,7 +21,7 @@ UJellyEffectComponent::UJellyEffectComponent()
 
 
 // Called when the game starts
-void UJellyEffectComponent::BeginPlay()
+void UHeung_JellyEffectComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -45,7 +45,7 @@ void UJellyEffectComponent::BeginPlay()
 	JellyEffectData_CurrentScaleRatio = FVector (1, 1, 1);
 }
 
-void UJellyEffectComponent::JellyEffectByGravity (float DelatTime)
+void UHeung_JellyEffectComponent::JellyEffectByGravity (float DelatTime)
 {
 	if (MySkeletalMeshComp == NULL)
 	{
@@ -72,7 +72,7 @@ void UJellyEffectComponent::JellyEffectByGravity (float DelatTime)
 }
 
 // Called every frame
-void UJellyEffectComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UHeung_JellyEffectComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
@@ -87,7 +87,7 @@ void UJellyEffectComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	MySkeletalMeshComp->SetRelativeScale3D (ResultScale);
 }
 
-void UJellyEffectComponent::PlayJellyEffectData(UJellyEffectDataAsset* Data)
+void UHeung_JellyEffectComponent::PlayJellyEffectData(UHeung_JellyEffectDataAsset* Data)
 {
 	if (Data == NULL)
 	{
@@ -102,14 +102,14 @@ void UJellyEffectComponent::PlayJellyEffectData(UJellyEffectDataAsset* Data)
 	JellyEffectNextStep ();
 }
 
-void UJellyEffectComponent::StopJellyEffectData()
+void UHeung_JellyEffectComponent::StopJellyEffectData()
 {
 	GetWorld ()->GetTimerManager ().ClearTimer (TimerHandle);
 
 	JellyEffectData_CurrentScaleRatio = FVector (1, 1, 1);
 }
 
-void UJellyEffectComponent::JellyEffectNextStep()
+void UHeung_JellyEffectComponent::JellyEffectNextStep()
 {
 	if (JellyEffectData_Current == NULL)
 	{
@@ -159,5 +159,5 @@ void UJellyEffectComponent::JellyEffectNextStep()
 	// , TimePoint0, TimePoint1 
 	// , JellyEffectData_CurrentScaleRatio.X, JellyEffectData_CurrentScaleRatio.Y, JellyEffectData_CurrentScaleRatio.Z);
 	
-	GetWorld ()->GetTimerManager ().SetTimer (TimerHandle, this, &UJellyEffectComponent::JellyEffectNextStep, JellyEffectTime);
+	GetWorld ()->GetTimerManager ().SetTimer (TimerHandle, this, &UHeung_JellyEffectComponent::JellyEffectNextStep, JellyEffectTime);
 }

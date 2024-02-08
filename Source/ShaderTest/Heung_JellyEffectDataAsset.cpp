@@ -1,19 +1,19 @@
     // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "JellyEffectDataAsset.h"
+#include "Heung_JellyEffectDataAsset.h"
 
-int UJellyEffectDataAsset::GetJellyEffectValuesCount () const
+int UHeung_JellyEffectDataAsset::GetJellyEffectValuesCount () const
 {
     return JellyEffectValues.Num ();
 }
 
-float UJellyEffectDataAsset::GetJellyEffectTime() const
+float UHeung_JellyEffectDataAsset::GetJellyEffectTime() const
 {
     return JellyEffectTime;
 }
 
-const FJellyEffectValue UJellyEffectDataAsset::GetJellyEffectValueByIndex (int index) const
+const FJellyEffectValue UHeung_JellyEffectDataAsset::GetJellyEffectValueByIndex (int index) const
 {
     if (index < 0 || index >= JellyEffectValues.Num ())
     {

@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "JellyEffectComponent.generated.h"
+#include "Heung_JellyEffectComponent.generated.h"
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class SHADERTEST_API UJellyEffectComponent : public UActorComponent
+class SHADERTEST_API UHeung_JellyEffectComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UJellyEffectComponent();
+	UHeung_JellyEffectComponent();
 
 protected:
 	// Called when the game starts
@@ -59,16 +59,16 @@ public:
 	FVector Velocity_Z_CurrentScaleRatio;
 
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = JellyEffect_Play)
-	class UJellyEffectDataAsset* JellyEffectData_Jump;
+	class UHeung_JellyEffectDataAsset* JellyEffectData_Jump;
 
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = JellyEffect_Play)
-	UJellyEffectDataAsset* JellyEffectData_Land;
+	UHeung_JellyEffectDataAsset* JellyEffectData_Land;
 
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = JellyEffect_Common)
 	float Scale_InterpSpeed = 1;
 
 	UPROPERTY (VisibleAnywhere, BlueprintReadOnly, Category = JellyEffect_Debug)
-	UJellyEffectDataAsset* JellyEffectData_Current;
+	UHeung_JellyEffectDataAsset* JellyEffectData_Current;
 
 	UPROPERTY (VisibleAnywhere, BlueprintReadOnly, Category = JellyEffect_Debug)
 	int JellyEffectData_CurrentIndex;
@@ -77,7 +77,7 @@ public:
 	FVector JellyEffectData_CurrentScaleRatio = FVector (1, 1, 1);
 
 	UFUNCTION (BlueprintCallable)
-	void PlayJellyEffectData (UJellyEffectDataAsset* Data);
+	void PlayJellyEffectData (UHeung_JellyEffectDataAsset* Data);
 	
 	UFUNCTION (BlueprintCallable)
 	void StopJellyEffectData ();
