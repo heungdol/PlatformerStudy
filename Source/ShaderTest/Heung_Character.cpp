@@ -5,13 +5,13 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "PlayerPlatformerState.h"
+#include "Heung_HangPoint.h"
 
 // Sets default values
 AHeung_Character::AHeung_Character()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 // Called when the game starts or when spawned
@@ -21,6 +21,9 @@ void AHeung_Character::BeginPlay()
 
 	UActorComponent* ActorComp = GetComponentByClass (UCharacterMovementComponent::StaticClass ());
     CharacterMovementComp = Cast <UCharacterMovementComponent> (ActorComp);
+	
+    ActorComp = GetComponentByClass (UHeung_HangPoint::StaticClass ());
+    HangPointComp = Cast <UHeung_HangPoint> (ActorComp);
 
     // PlatformingState_Next = ECharacterPlatformingState::E_IDLE;
     // CapsuleState_Current = ECharacterCapsuleState::E_STAND;
@@ -30,7 +33,8 @@ void AHeung_Character::BeginPlay()
     IsDetectingSlidePeak = false;
     
     PlayerPlatformerState_Current = GetPlayerPlatformerState_Idle ();
-    PlayerPlatformerState_Current->BeginState (this);
+    PlayerPlatformerState_Current.Pin()->ResetState (this);
+    PlayerPlatformerState_Current.Pin()->BeginState (this);
 }
 
 // Called every frame
@@ -130,15 +134,16 @@ void AHeung_Character::UpdateCharacterPlatformingState(float DeltaTime)
 {
     if (PlayerPlatformerState_Current != NULL)
     {
-        PlayerPlatformerState_Current->TickState (this, DeltaTime, PlayerPlatformerState_Next);
+        PlayerPlatformerState_Current.Pin()->TickState (this, DeltaTime, PlayerPlatformerState_Next);
 
         if (PlayerPlatformerState_Next != NULL)
         {
-            PlayerPlatformerState_Current->ExitState (this);
-            delete PlayerPlatformerState_Current;
+            PlayerPlatformerState_Current.Pin()->ExitState (this);
+            // delete PlayerPlatformerState_Current;
 
             PlayerPlatformerState_Current = PlayerPlatformerState_Next;
-            PlayerPlatformerState_Current->BeginState (this);
+            PlayerPlatformerState_Current.Pin()->ResetState (this);
+            PlayerPlatformerState_Current.Pin()->BeginState (this);
 
             PlayerPlatformerState_Next = NULL;
         }
@@ -352,58 +357,96 @@ void AHeung_Character::InputAction_Release_Platforming_Crouch ()
     InputButton_Crouch = false;
 }
 
-PlayerPlatformerState_Idle* AHeung_Character::GetPlayerPlatformerState_Idle ()
+TWeakPtr <PlayerPlatformerState_Idle> AHeung_Character::GetPlayerPlatformerState_Idle ()
 {
-    return new PlayerPlatformerState_Idle 
-    (
-        CrouchMinVelocityLength,
-        BrakeXYSpeed_Active,
-        BrakeDirectionDot
-    );
+    if (PlayerPlatformerStateInst_Idle == NULL)
+    {
+        UE_LOG(LogTemp, Display, TEXT("Make SharedPTR: IDLE"));
+
+        PlayerPlatformerStateInst_Idle = MakeShared <PlayerPlatformerState_Idle>
+        (
+            CrouchMinVelocityLength,
+            BrakeXYSpeed_Active,
+            BrakeDirectionDot
+        );
+    }
+
+    return PlayerPlatformerStateInst_Idle;
 }
 
-PlayerPlatformerState_Fall* AHeung_Character::GetPlayerPlatformerState_Fall ()
+TWeakPtr <PlayerPlatformerState_Fall> AHeung_Character::GetPlayerPlatformerState_Fall ()
 {
-    return new PlayerPlatformerState_Fall ();
+    if (PlayerPlatformerStateInst_Fall == NULL)
+    {
+        PlayerPlatformerStateInst_Fall = MakeShared <PlayerPlatformerState_Fall> ();
+    }
+
+    return PlayerPlatformerStateInst_Fall; 
 }
 
-PlayerPlatformerState_Crouch* AHeung_Character::GetPlayerPlatformerState_Crouch ()
+TWeakPtr <PlayerPlatformerState_Crouch> AHeung_Character::GetPlayerPlatformerState_Crouch ()
 {
-    return new PlayerPlatformerState_Crouch ();
+    if (PlayerPlatformerStateInst_Crouch == NULL)
+    {
+        PlayerPlatformerStateInst_Crouch = MakeShared <PlayerPlatformerState_Crouch> (); 
+    }
+
+    return PlayerPlatformerStateInst_Crouch;
 }
 
-PlayerPlatformerState_Slide* AHeung_Character::GetPlayerPlatformerState_Slide ()
+TWeakPtr <PlayerPlatformerState_Slide> AHeung_Character::GetPlayerPlatformerState_Slide ()
 {
-    return new PlayerPlatformerState_Slide (SlideRate, SlideSpeed);
+    if (PlayerPlatformerStateInst_Slide == NULL)
+    {
+        PlayerPlatformerStateInst_Slide = MakeShared <PlayerPlatformerState_Slide> (SlideRate, SlideSpeed);
+    }
+
+    return PlayerPlatformerStateInst_Slide;
 }
 
-PlayerPlatformerState_Stomp* AHeung_Character::GetPlayerPlatformerState_Stomp ()
+TWeakPtr <PlayerPlatformerState_Stomp> AHeung_Character::GetPlayerPlatformerState_Stomp ()
 {
-    return new PlayerPlatformerState_Stomp 
-    (
-        StompRate_0,
-        StompRate_1,
-        StompRate_2,
-        StompRate_3,
-        StompZSpeed,
-        StompZSpeed_Jump
-    );
+    if (PlayerPlatformerStateInst_Stomp == NULL)
+    {
+        PlayerPlatformerStateInst_Stomp = MakeShared <PlayerPlatformerState_Stomp> 
+        (
+            StompRate_0,
+            StompRate_1,
+            StompRate_2,
+            StompRate_3,
+            StompZSpeed,
+            StompZSpeed_Jump
+        );
+    }
+
+    return PlayerPlatformerStateInst_Stomp;
 }
 
-PlayerPlatformerState_Brake* AHeung_Character::GetPlayerPlatformerState_Brake ()
+TWeakPtr <PlayerPlatformerState_Brake> AHeung_Character::GetPlayerPlatformerState_Brake ()
 {
-    return new PlayerPlatformerState_Brake 
-    (
-        BrakeRate,
-        BrakeXYSpeed_Begin,
-        BrakeXYSpeed_End
-    );
+    if (PlayerPlatformerStateInst_Brake == NULL)
+    {
+        PlayerPlatformerStateInst_Brake = MakeShared <PlayerPlatformerState_Brake> 
+        (
+            BrakeRate,
+            BrakeXYSpeed_Begin,
+            BrakeXYSpeed_End
+        );
+    }
+
+    return PlayerPlatformerStateInst_Brake;
 }
 
-PlayerPlatformerState_Hang* AHeung_Character::GetPlayerPlatformerState_Hang ()
+TWeakPtr <PlayerPlatformerState_Hang> AHeung_Character::GetPlayerPlatformerState_Hang ()
 {
-    return new PlayerPlatformerState_Hang 
-    (
-        HangPointDetectLength_LaunchZVelocity
-    );
+    if (PlayerPlatformerStateInst_Hang == NULL)
+    {
+        PlayerPlatformerStateInst_Hang = MakeShared <PlayerPlatformerState_Hang> 
+        (
+            HangPointDetectLength_LaunchZVelocity
+            , nullptr
+        );
+    }
+
+    return PlayerPlatformerStateInst_Hang;
 }

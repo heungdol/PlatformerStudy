@@ -22,7 +22,7 @@ float UMyCharacterMovementComponent::GetGravityZ() const
 
     float Ret = Super::GetGravityZ() * GravityScale * Rate;
 
-    UE_LOG(LogTemp, Display, TEXT("Gravity: %f"), Ret);
+    // UE_LOG(LogTemp, Display, TEXT("Gravity: %f"), Ret);
 
     return Ret;
 }

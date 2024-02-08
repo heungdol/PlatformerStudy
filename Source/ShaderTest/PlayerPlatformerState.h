@@ -17,8 +17,10 @@ public:
     PlayerPlatformerState() {}
     virtual ~PlayerPlatformerState() {}
 
+    virtual void ResetState (AHeung_Character* Character) {}
+
     virtual void BeginState(AHeung_Character* Character) = 0; 
-    virtual void TickState(AHeung_Character* Character, float DeltaTime, PlayerPlatformerState*& NextState) = 0; 
+    virtual void TickState(AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState) = 0; 
     virtual void ExitState(AHeung_Character* Character) = 0; 
 };
 
@@ -36,8 +38,10 @@ public:
     , BrakeDirectionDot (BrakeDirectionDot)
     {}
 
+    virtual void ResetState (AHeung_Character* Character) override {}
+
     virtual void BeginState(AHeung_Character* Character) override;
-    virtual void TickState(AHeung_Character* Character, float DeltaTime, PlayerPlatformerState*& NextState) override;
+    virtual void TickState(AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState) override;
     virtual void ExitState(AHeung_Character* Character) override;
 
 private:
@@ -50,16 +54,20 @@ private:
 class PlayerPlatformerState_Fall : public PlayerPlatformerState
 {
 public:
+    virtual void ResetState (AHeung_Character* Character) override {}
+
 	virtual void BeginState (AHeung_Character* Character) override;
-	virtual void TickState (AHeung_Character* Character, float DeltaTime, PlayerPlatformerState*& NextState) override;
+	virtual void TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState) override;
 	virtual void ExitState (AHeung_Character* Character) override;
 };
 
 class PlayerPlatformerState_Crouch : public PlayerPlatformerState
 {
 public:
+    virtual void ResetState (AHeung_Character* Character) override {}
+
 	virtual void BeginState (AHeung_Character* Character) override;
-	virtual void TickState (AHeung_Character* Character, float DeltaTime, PlayerPlatformerState*& NextState) override;
+	virtual void TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState) override;
 	virtual void ExitState (AHeung_Character* Character) override;
 };
 
@@ -75,8 +83,13 @@ public:
     , SlideSpeed (SlideSpeed) 
     {}
 
+    virtual void ResetState (AHeung_Character* Character) override 
+    {
+        SlideRate_Current = SlideRate;
+    }
+
 	virtual void BeginState (AHeung_Character* Character) override;
-	virtual void TickState (AHeung_Character* Character, float DeltaTime, PlayerPlatformerState*& NextState) override;
+	virtual void TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState) override;
 	virtual void ExitState (AHeung_Character* Character) override;
 
 private:
@@ -106,8 +119,14 @@ public:
     StompZSpeed_Jump (StompZSpeed_Jump)
     {}
 
+    virtual void ResetState (AHeung_Character* Character) override 
+    {
+        StompRate_Current = StompRate_0;
+        StomeState_Current = 0;
+    }
+
 	virtual void BeginState (AHeung_Character* Character) override;
-	virtual void TickState (AHeung_Character* Character, float DeltaTime, PlayerPlatformerState*& NextState) override;
+	virtual void TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState) override;
 	virtual void ExitState (AHeung_Character* Character) override;
 
 private:
@@ -137,8 +156,13 @@ public:
     , BrakeSpeed_Min (BrakeSpeed_Min)
     {}
 
+    virtual void ResetState (AHeung_Character* Character) override 
+    {
+        BrakeRate_Current = BrakeRate;
+    }
+
 	virtual void BeginState (AHeung_Character* Character) override;
-	virtual void TickState (AHeung_Character* Character, float DeltaTime, PlayerPlatformerState*& NextState) override;
+	virtual void TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState) override;
 	virtual void ExitState (AHeung_Character* Character) override;
 
 private:
@@ -154,14 +178,18 @@ private:
 class PlayerPlatformerState_Hang : public PlayerPlatformerState
 {
 public:
-    PlayerPlatformerState_Hang (float HangJumpSpeed)
+    PlayerPlatformerState_Hang (float HangJumpSpeed, AActor* HangPointPlatform)
     : HangJumpSpeed (HangJumpSpeed)
+    , HangPointPlatform (HangPointPlatform)
     {}
 
+    virtual void ResetState (AHeung_Character* Character) override {}
+
 	virtual void BeginState (AHeung_Character* Character) override;
-	virtual void TickState (AHeung_Character* Character, float DeltaTime, PlayerPlatformerState*& NextState) override;
+	virtual void TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState) override;
 	virtual void ExitState (AHeung_Character* Character) override;
 
 private:
     float HangJumpSpeed;
+    AActor* HangPointPlatform;
 };

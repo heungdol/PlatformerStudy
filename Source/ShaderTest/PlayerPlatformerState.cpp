@@ -38,7 +38,7 @@ void PlayerPlatformerState_Idle::BeginState (AHeung_Character* Character)
     }
 }
 
-void PlayerPlatformerState_Idle::TickState (AHeung_Character* Character, float DeltaTime, PlayerPlatformerState*& NextState)
+void PlayerPlatformerState_Idle::TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState)
 {
     if (Character == NULL)
     {
@@ -109,7 +109,7 @@ void PlayerPlatformerState_Fall::BeginState (AHeung_Character* Character)
 
 }
 
-void PlayerPlatformerState_Fall::TickState (AHeung_Character* Character, float DeltaTime, PlayerPlatformerState*& NextState) 
+void PlayerPlatformerState_Fall::TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState) 
 {
     if (Character == NULL)
     {
@@ -193,7 +193,7 @@ void PlayerPlatformerState_Crouch::BeginState(AHeung_Character* Character)
     }
 }
 
-void PlayerPlatformerState_Crouch::TickState(AHeung_Character* Character, float DeltaTime, PlayerPlatformerState*& NextState)
+void PlayerPlatformerState_Crouch::TickState(AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState)
 {
     if (Character == NULL)
     {
@@ -263,7 +263,7 @@ void PlayerPlatformerState_Slide::BeginState(AHeung_Character* Character)
     SlideRate_Current = SlideRate;
 }
 
-void PlayerPlatformerState_Slide::TickState(AHeung_Character* Character, float DeltaTime, PlayerPlatformerState*& NextState)
+void PlayerPlatformerState_Slide::TickState(AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState)
 {
     if (Character == NULL)
     {
@@ -324,7 +324,7 @@ void PlayerPlatformerState_Stomp::BeginState(AHeung_Character* Character)
     StompRate_Current = StompRate_0;
 }
 
-void PlayerPlatformerState_Stomp::TickState(AHeung_Character* Character, float DeltaTime, PlayerPlatformerState*& NextState)
+void PlayerPlatformerState_Stomp::TickState(AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState)
 {
     if (Character == NULL)
     {
@@ -466,7 +466,7 @@ void PlayerPlatformerState_Brake::BeginState (AHeung_Character* Character)
     BrakeRate_Current = BrakeRate;
 }
 
-void PlayerPlatformerState_Brake::TickState (AHeung_Character* Character, float DeltaTime, PlayerPlatformerState*& NextState)
+void PlayerPlatformerState_Brake::TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState)
 {
     if (Character == NULL)
     {
@@ -484,6 +484,10 @@ void PlayerPlatformerState_Brake::TickState (AHeung_Character* Character, float 
     {
         NextState = Character->GetPlayerPlatformerState_Idle ();
     }
+    // else if (Character->GetVelocity ().Length () < BrakeSpeed_Min)
+    // {
+    //     NextState = Character->GetPlayerPlatformerState_Idle ();
+    // }
 
     BrakeRate_Current -= DeltaTime;
 }
@@ -509,12 +513,12 @@ void PlayerPlatformerState_Hang::BeginState (AHeung_Character* Character)
 
     if (Character->GetCharacterMovement () != NULL)
     {
-        Character->GetCharacterMovement ()->SetActive (false);
+        Character->GetCharacterMovement ()->ResetMoveState ();
     }
 
     if (Character->GetCharacterMovement () != NULL)
     {
-        Character->GetCharacterMovement ()->ResetMoveState ();
+        Character->GetCharacterMovement ()->SetActive (false);
     }
 
     if (Character->GetCharacterMovement () != NULL)
@@ -522,11 +526,13 @@ void PlayerPlatformerState_Hang::BeginState (AHeung_Character* Character)
         Character->GetCharacterMovement ()->bOrientRotationToMovement = true;
     }
 
+    Character->ResetInputButtonDelay ();
+
     Character->SetActorLocation (Character->GetHangPointLocation_Final ());
     Character->SetActorRotation (Character->GetHangPointRotation ());
 }
 
-void PlayerPlatformerState_Hang::TickState (AHeung_Character* Character, float DeltaTime, PlayerPlatformerState*& NextState)
+void PlayerPlatformerState_Hang::TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState)
 {
     if (Character == NULL)
     {

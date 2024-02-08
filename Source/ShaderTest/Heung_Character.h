@@ -79,6 +79,7 @@ protected:
 	void InputAction_Release_Platforming_Crouch ();
 	
 	class UCharacterMovementComponent* CharacterMovementComp;
+	class UHeung_HangPoint* HangPointComp;
 
 	// ==========================================================================================
 
@@ -154,8 +155,16 @@ protected:
 	UPROPERTY (VisibleAnywhere, Category = HEUNG_COMMON)
 	ECharacterPlatformingState PlatformingStateEnum_Current = ECharacterPlatformingState::E_IDLE;
 
-	class PlayerPlatformerState* PlayerPlatformerState_Current;
-	PlayerPlatformerState* PlayerPlatformerState_Next;
+	TWeakPtr <class PlayerPlatformerState> PlayerPlatformerState_Current;
+	TWeakPtr <PlayerPlatformerState> PlayerPlatformerState_Next;
+
+	TSharedPtr <class PlayerPlatformerState_Idle> PlayerPlatformerStateInst_Idle;
+	TSharedPtr <class PlayerPlatformerState_Fall> PlayerPlatformerStateInst_Fall;
+	TSharedPtr <class PlayerPlatformerState_Crouch> PlayerPlatformerStateInst_Crouch;
+	TSharedPtr <class PlayerPlatformerState_Slide> PlayerPlatformerStateInst_Slide;
+	TSharedPtr <class PlayerPlatformerState_Stomp> PlayerPlatformerStateInst_Stomp;
+	TSharedPtr <class PlayerPlatformerState_Brake> PlayerPlatformerStateInst_Brake;
+	TSharedPtr <class PlayerPlatformerState_Hang> PlayerPlatformerStateInst_Hang;
 
 	//
 
@@ -295,7 +304,7 @@ protected:
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_BRAKE)
 	float BrakeXYSpeed_Active = 100;
 
-	UPROPERTY (VisibleAnywhere, BlueprintReadOnly, Category = HEUNG_BRAKE)
+	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_BRAKE)
 	float BrakeXYSpeed_Begin = 300;
 	
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_BRAKE)
@@ -501,11 +510,11 @@ public:
 
 	// ===================================================================
 
-	class PlayerPlatformerState_Idle* GetPlayerPlatformerState_Idle ();
-	class PlayerPlatformerState_Fall* GetPlayerPlatformerState_Fall ();
-	class PlayerPlatformerState_Crouch* GetPlayerPlatformerState_Crouch ();
-	class PlayerPlatformerState_Slide* GetPlayerPlatformerState_Slide ();
-	class PlayerPlatformerState_Stomp* GetPlayerPlatformerState_Stomp ();
-	class PlayerPlatformerState_Brake* GetPlayerPlatformerState_Brake ();
-	class PlayerPlatformerState_Hang* GetPlayerPlatformerState_Hang ();
+	TWeakPtr <PlayerPlatformerState_Idle> GetPlayerPlatformerState_Idle ();
+	TWeakPtr <PlayerPlatformerState_Fall> GetPlayerPlatformerState_Fall ();
+	TWeakPtr <PlayerPlatformerState_Crouch> GetPlayerPlatformerState_Crouch ();
+	TWeakPtr <PlayerPlatformerState_Slide> GetPlayerPlatformerState_Slide ();
+	TWeakPtr <PlayerPlatformerState_Stomp> GetPlayerPlatformerState_Stomp ();
+	TWeakPtr <PlayerPlatformerState_Brake> GetPlayerPlatformerState_Brake ();
+	TWeakPtr <PlayerPlatformerState_Hang> GetPlayerPlatformerState_Hang ();
 };
