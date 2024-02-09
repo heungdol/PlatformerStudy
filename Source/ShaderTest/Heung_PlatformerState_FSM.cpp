@@ -1,13 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "PlayerPlatformerState.h"
+#include "Heung_PlatformerState_FSM.h"
 #include "Heung_Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 
 // ============================================================================================================
 
-void PlayerPlatformerState_Idle::BeginState (AHeung_Character* Character)
+void Heung_PlatformerState_FSM_Idle::BeginState (AHeung_Character* Character)
 {
     // UE_LOG(LogTemp, Display, TEXT("State Begin: IDLE"));
 
@@ -38,7 +38,7 @@ void PlayerPlatformerState_Idle::BeginState (AHeung_Character* Character)
     }
 }
 
-void PlayerPlatformerState_Idle::TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState)
+void Heung_PlatformerState_FSM_Idle::TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<Heung_PlatformerState_FSM>& NextState)
 {
     if (Character == NULL)
     {
@@ -49,27 +49,27 @@ void PlayerPlatformerState_Idle::TickState (AHeung_Character* Character, float D
 
     if (Character->GetCharacterMovement ()->IsFalling () == true)
     {
-        NextState = Character->GetPlayerPlatformerState_Fall ();
+        NextState = Character->GetPlayerPlatformerState_FSM_Fall ();
     }
     else if (Character->GetIsInputButtonAble () && Character->GetInputButton_Crouch () == true)
     {
         if (Character->GetVelocity ().Length () < CrouchVelocityLength)
         {
-            NextState = Character->GetPlayerPlatformerState_Crouch ();
+            NextState = Character->GetPlayerPlatformerState_FSM_Crouch ();
         }
         else
         {
-            NextState = Character->GetPlayerPlatformerState_Slide ();
+            NextState = Character->GetPlayerPlatformerState_FSM_Slide ();
         }
     }
     else if ((FVector::DotProduct (Character->GetVelocityDirection (), Character->GetInputAxisDirection()) < BrakeDirectionDot)
     && Character->GetVelocity ().Length() > BrakeVelocityLength)
     {
-        NextState = Character->GetPlayerPlatformerState_Brake ();
+        NextState = Character->GetPlayerPlatformerState_FSM_Brake ();
     }
 }
 
-void PlayerPlatformerState_Idle::ExitState (AHeung_Character* Character)
+void Heung_PlatformerState_FSM_Idle::ExitState (AHeung_Character* Character)
 {
     // UE_LOG(LogTemp, Display, TEXT("State Exit: IDLE"));
 
@@ -77,7 +77,7 @@ void PlayerPlatformerState_Idle::ExitState (AHeung_Character* Character)
 
 // ============================================================================================================
 
-void PlayerPlatformerState_Fall::BeginState (AHeung_Character* Character) 
+void Heung_PlatformerState_FSM_Fall::BeginState (AHeung_Character* Character) 
 {
     if (Character == NULL)
     {
@@ -114,7 +114,7 @@ void PlayerPlatformerState_Fall::BeginState (AHeung_Character* Character)
     }
 }
 
-void PlayerPlatformerState_Fall::TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState) 
+void Heung_PlatformerState_FSM_Fall::TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<Heung_PlatformerState_FSM>& NextState) 
 {
     if (Character == NULL)
     {
@@ -130,11 +130,11 @@ void PlayerPlatformerState_Fall::TickState (AHeung_Character* Character, float D
 
     if (Character->GetCharacterMovement ()->IsFalling () == false)
     {
-        NextState = Character->GetPlayerPlatformerState_Idle ();
+        NextState = Character->GetPlayerPlatformerState_FSM_Idle ();
     }
     else if (Character->GetIsInputButtonAble () && Character->GetInputButton_Crouch ())
     {
-        NextState = Character->GetPlayerPlatformerState_Stomp ();
+        NextState = Character->GetPlayerPlatformerState_FSM_Stomp ();
     }
     else if (Character->GetCharacterMovement () != NULL 
     && Character->GetCharacterMovement ()->IsFalling () 
@@ -157,12 +157,12 @@ void PlayerPlatformerState_Fall::TickState (AHeung_Character* Character, float D
 
         if (IsPassed_Loc && IsPassed_Dot)
         {
-            NextState = Character->GetPlayerPlatformerState_Hang ();
+            NextState = Character->GetPlayerPlatformerState_FSM_Hang ();
         }
     }
 }
 
-void PlayerPlatformerState_Fall::ExitState (AHeung_Character* Character) 
+void Heung_PlatformerState_FSM_Fall::ExitState (AHeung_Character* Character) 
 {
     // UE_LOG(LogTemp, Display, TEXT("State Exit: FALL"));		
 
@@ -179,7 +179,7 @@ void PlayerPlatformerState_Fall::ExitState (AHeung_Character* Character)
 
 // ============================================================================================================
 
-void PlayerPlatformerState_Crouch::BeginState(AHeung_Character* Character)
+void Heung_PlatformerState_FSM_Crouch::BeginState(AHeung_Character* Character)
 {
     if (Character == NULL)
     {
@@ -213,7 +213,7 @@ void PlayerPlatformerState_Crouch::BeginState(AHeung_Character* Character)
     }
 }
 
-void PlayerPlatformerState_Crouch::TickState(AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState)
+void Heung_PlatformerState_FSM_Crouch::TickState(AHeung_Character* Character, float DeltaTime, TWeakPtr<Heung_PlatformerState_FSM>& NextState)
 {
     if (Character == NULL)
     {
@@ -222,15 +222,15 @@ void PlayerPlatformerState_Crouch::TickState(AHeung_Character* Character, float 
 
     if (Character->GetCharacterMovement ()->IsFalling () == true)
     {
-        NextState = Character->GetPlayerPlatformerState_Fall ();
+        NextState = Character->GetPlayerPlatformerState_FSM_Fall ();
     }
     else if (Character->GetIsInputButtonAble () &&  Character->GetInputButton_Crouch () == false)
     {
-        NextState = Character->GetPlayerPlatformerState_Idle ();
+        NextState = Character->GetPlayerPlatformerState_FSM_Idle ();
     }
 }
 
-void PlayerPlatformerState_Crouch::ExitState(AHeung_Character* Character)
+void Heung_PlatformerState_FSM_Crouch::ExitState(AHeung_Character* Character)
 {
     
 }
@@ -238,7 +238,7 @@ void PlayerPlatformerState_Crouch::ExitState(AHeung_Character* Character)
 // ============================================================================================================
 
 
-void PlayerPlatformerState_Slide::BeginState(AHeung_Character* Character)
+void Heung_PlatformerState_FSM_Slide::BeginState(AHeung_Character* Character)
 {
     if (Character == NULL)
     {
@@ -283,7 +283,7 @@ void PlayerPlatformerState_Slide::BeginState(AHeung_Character* Character)
     SlideRate_Current = SlideRate;
 }
 
-void PlayerPlatformerState_Slide::TickState(AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState)
+void Heung_PlatformerState_FSM_Slide::TickState(AHeung_Character* Character, float DeltaTime, TWeakPtr<Heung_PlatformerState_FSM>& NextState)
 {
     if (Character == NULL)
     {
@@ -292,11 +292,11 @@ void PlayerPlatformerState_Slide::TickState(AHeung_Character* Character, float D
 
     if (SlideRate_Current < 0 && Character->GetIsDetectSlidePeak () == false)
     {
-        NextState = Character->GetPlayerPlatformerState_Idle ();
+        NextState = Character->GetPlayerPlatformerState_FSM_Idle ();
     }
     else if (Character->GetIsDetectDownward () == false)
     {
-        NextState = Character->GetPlayerPlatformerState_Fall ();
+        NextState = Character->GetPlayerPlatformerState_FSM_Fall ();
         
         if (Character->GetCharacterMovement () != nullptr)
         {
@@ -307,7 +307,7 @@ void PlayerPlatformerState_Slide::TickState(AHeung_Character* Character, float D
     SlideRate_Current -= DeltaTime;
 }
 
-void PlayerPlatformerState_Slide::ExitState(AHeung_Character* Character)
+void Heung_PlatformerState_FSM_Slide::ExitState(AHeung_Character* Character)
 {
     
 }
@@ -315,7 +315,7 @@ void PlayerPlatformerState_Slide::ExitState(AHeung_Character* Character)
 // ============================================================================================================
 
 
-void PlayerPlatformerState_Stomp::BeginState(AHeung_Character* Character)
+void Heung_PlatformerState_FSM_Stomp::BeginState(AHeung_Character* Character)
 {
     if (Character == NULL)
     {
@@ -348,7 +348,7 @@ void PlayerPlatformerState_Stomp::BeginState(AHeung_Character* Character)
     StompRate_Current = StompRate_0;
 }
 
-void PlayerPlatformerState_Stomp::TickState(AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState)
+void Heung_PlatformerState_FSM_Stomp::TickState(AHeung_Character* Character, float DeltaTime, TWeakPtr<Heung_PlatformerState_FSM>& NextState)
 {
     if (Character == NULL)
     {
@@ -390,7 +390,7 @@ void PlayerPlatformerState_Stomp::TickState(AHeung_Character* Character, float D
 
             case 4:
 
-            NextState = Character->GetPlayerPlatformerState_Idle ();
+            NextState = Character->GetPlayerPlatformerState_FSM_Idle ();
 
             break;
         }
@@ -440,7 +440,7 @@ void PlayerPlatformerState_Stomp::TickState(AHeung_Character* Character, float D
 
             Character->LaunchCharacter (FVector (0, 0, StompZSpeed_Jump), false, false);
 
-            NextState = Character->GetPlayerPlatformerState_Fall ();
+            NextState = Character->GetPlayerPlatformerState_FSM_Fall ();
         }
 
         break;
@@ -449,14 +449,14 @@ void PlayerPlatformerState_Stomp::TickState(AHeung_Character* Character, float D
     StompRate_Current -= DeltaTime;
 }
 
-void PlayerPlatformerState_Stomp::ExitState(AHeung_Character* Character)
+void Heung_PlatformerState_FSM_Stomp::ExitState(AHeung_Character* Character)
 {
     
 }
 
 // ============================================================================================================
 
-void PlayerPlatformerState_Brake::BeginState (AHeung_Character* Character)
+void Heung_PlatformerState_FSM_Brake::BeginState (AHeung_Character* Character)
 {
     if (Character == NULL)
     {
@@ -490,7 +490,7 @@ void PlayerPlatformerState_Brake::BeginState (AHeung_Character* Character)
     BrakeRate_Current = BrakeRate;
 }
 
-void PlayerPlatformerState_Brake::TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState)
+void Heung_PlatformerState_FSM_Brake::TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<Heung_PlatformerState_FSM>& NextState)
 {
     if (Character == NULL)
     {
@@ -502,28 +502,28 @@ void PlayerPlatformerState_Brake::TickState (AHeung_Character* Character, float 
 
     if (Character->GetCharacterMovement () != NULL && Character->GetCharacterMovement ()->IsFalling ())
     {
-        NextState = Character->GetPlayerPlatformerState_Fall ();
+        NextState = Character->GetPlayerPlatformerState_FSM_Fall ();
     }
     else if (BrakeRate_Current < 0)
     {
-        NextState = Character->GetPlayerPlatformerState_Idle ();
+        NextState = Character->GetPlayerPlatformerState_FSM_Idle ();
     }
     // else if (Character->GetVelocity ().Length () < BrakeSpeed_Min)
     // {
-    //     NextState = Character->GetPlayerPlatformerState_Idle ();
+    //     NextState = Character->GetPlayerPlatformerState_FSM_Idle ();
     // }
 
     BrakeRate_Current -= DeltaTime;
 }
 
-void PlayerPlatformerState_Brake::ExitState (AHeung_Character* Character)
+void Heung_PlatformerState_FSM_Brake::ExitState (AHeung_Character* Character)
 {
 
 }
 
 // ============================================================================================================
 
-void PlayerPlatformerState_Hang::BeginState (AHeung_Character* Character)
+void Heung_PlatformerState_FSM_Hang::BeginState (AHeung_Character* Character)
 {
     if (Character == NULL)
     {
@@ -556,7 +556,7 @@ void PlayerPlatformerState_Hang::BeginState (AHeung_Character* Character)
 
 }
 
-void PlayerPlatformerState_Hang::TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState)
+void Heung_PlatformerState_FSM_Hang::TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<Heung_PlatformerState_FSM>& NextState)
 {
     if (Character == NULL)
     {
@@ -600,17 +600,17 @@ void PlayerPlatformerState_Hang::TickState (AHeung_Character* Character, float D
 
         Character->LaunchCharacter (FVector (0, 0, HangJumpSpeed), false, false);
 
-        NextState = Character->GetPlayerPlatformerState_Fall ();
+        NextState = Character->GetPlayerPlatformerState_FSM_Fall ();
     }
     else if (GoToDown)
     {
         Character->SetInputButton_Crouch (false);
 
-        NextState = Character->GetPlayerPlatformerState_Fall ();
+        NextState = Character->GetPlayerPlatformerState_FSM_Fall ();
     }
 }
 
-void PlayerPlatformerState_Hang::ExitState (AHeung_Character* Character)
+void Heung_PlatformerState_FSM_Hang::ExitState (AHeung_Character* Character)
 {
     if (Character == nullptr)
     {

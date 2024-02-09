@@ -150,21 +150,21 @@ protected:
 	//
 
 	UPROPERTY (VisibleAnywhere, Category = HEUNG_COMMON)
-	EHeung_CapsuleState_Enum CapsuleState_Current = EHeung_CapsuleState_Enum::E_STAND;
+	EHeung_CapsuleState_Enum CapsuleState_Enum_Current = EHeung_CapsuleState_Enum::E_STAND;
 
 	UPROPERTY (VisibleAnywhere, Category = HEUNG_COMMON)
-	EHeung_PlatformerState_Enum PlatformingStateEnum_Current = EHeung_PlatformerState_Enum::E_IDLE;
+	EHeung_PlatformerState_Enum PlatformerState_Enum_Current = EHeung_PlatformerState_Enum::E_IDLE;
 
-	TWeakPtr <class PlayerPlatformerState> PlayerPlatformerState_Current;
-	TWeakPtr <PlayerPlatformerState> PlayerPlatformerState_Next;
+	TWeakPtr <class Heung_PlatformerState_FSM> PlayerPlatformerState_FSM_Current;
+	TWeakPtr <Heung_PlatformerState_FSM> PlayerPlatformerState_FSM_Next;
 
-	TSharedPtr <class PlayerPlatformerState_Idle> PlayerPlatformerStateInst_Idle;
-	TSharedPtr <class PlayerPlatformerState_Fall> PlayerPlatformerStateInst_Fall;
-	TSharedPtr <class PlayerPlatformerState_Crouch> PlayerPlatformerStateInst_Crouch;
-	TSharedPtr <class PlayerPlatformerState_Slide> PlayerPlatformerStateInst_Slide;
-	TSharedPtr <class PlayerPlatformerState_Stomp> PlayerPlatformerStateInst_Stomp;
-	TSharedPtr <class PlayerPlatformerState_Brake> PlayerPlatformerStateInst_Brake;
-	TSharedPtr <class PlayerPlatformerState_Hang> PlayerPlatformerStateInst_Hang;
+	TSharedPtr <class Heung_PlatformerState_FSM_Idle> PlayerPlatformerState_FSM_Idle_Inst;
+	TSharedPtr <class Heung_PlatformerState_FSM_Fall> PlayerPlatformerState_FSM_Fall_Inst;
+	TSharedPtr <class Heung_PlatformerState_FSM_Crouch> PlayerPlatformerState_FSM_Crouch_Inst;
+	TSharedPtr <class Heung_PlatformerState_FSM_Slide> PlayerPlatformerState_FSM_Slide_Inst;
+	TSharedPtr <class Heung_PlatformerState_FSM_Stomp> PlayerPlatformerState_FSM_Stomp_Inst;
+	TSharedPtr <class Heung_PlatformerState_FSM_Brake> PlayerPlatformerState_FSM_Brake_Inst;
+	TSharedPtr <class Heung_PlatformerState_FSM_Hang> PlayerPlatformerState_FSM_Hang_Inst;
 
 	//
 
@@ -550,13 +550,13 @@ public:
 	UFUNCTION ()
 	void SetCharacterPlatformingState (EHeung_PlatformerState_Enum E)
 	{
-		PlatformingStateEnum_Current = E;
+		PlatformerState_Enum_Current = E;
 	}
 
 	UFUNCTION ()
 	EHeung_PlatformerState_Enum GetCharacterPlatformingState () const
 	{
-		return PlatformingStateEnum_Current;
+		return PlatformerState_Enum_Current;
 	}
 
 	// ======================================================================
@@ -580,11 +580,11 @@ public:
 
 	// ===================================================================
 
-	TWeakPtr <PlayerPlatformerState_Idle> GetPlayerPlatformerState_Idle ();
-	TWeakPtr <PlayerPlatformerState_Fall> GetPlayerPlatformerState_Fall ();
-	TWeakPtr <PlayerPlatformerState_Crouch> GetPlayerPlatformerState_Crouch ();
-	TWeakPtr <PlayerPlatformerState_Slide> GetPlayerPlatformerState_Slide ();
-	TWeakPtr <PlayerPlatformerState_Stomp> GetPlayerPlatformerState_Stomp ();
-	TWeakPtr <PlayerPlatformerState_Brake> GetPlayerPlatformerState_Brake ();
-	TWeakPtr <PlayerPlatformerState_Hang> GetPlayerPlatformerState_Hang ();
+	TWeakPtr <Heung_PlatformerState_FSM_Idle> GetPlayerPlatformerState_FSM_Idle ();
+	TWeakPtr <Heung_PlatformerState_FSM_Fall> GetPlayerPlatformerState_FSM_Fall ();
+	TWeakPtr <Heung_PlatformerState_FSM_Crouch> GetPlayerPlatformerState_FSM_Crouch ();
+	TWeakPtr <Heung_PlatformerState_FSM_Slide> GetPlayerPlatformerState_FSM_Slide ();
+	TWeakPtr <Heung_PlatformerState_FSM_Stomp> GetPlayerPlatformerState_FSM_Stomp ();
+	TWeakPtr <Heung_PlatformerState_FSM_Brake> GetPlayerPlatformerState_FSM_Brake ();
+	TWeakPtr <Heung_PlatformerState_FSM_Hang> GetPlayerPlatformerState_FSM_Hang ();
 };

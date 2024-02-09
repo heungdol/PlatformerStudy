@@ -4,7 +4,7 @@
 #include "Heung_Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "PlayerPlatformerState.h"
+#include "Heung_PlatformerState_FSM.h"
 #include "Heung_HangPoint.h"
 
 // Sets default values
@@ -32,9 +32,9 @@ void AHeung_Character::BeginPlay()
     IsDetectingCapsulePeak = false;
     IsDetectingSlidePeak = false;
     
-    PlayerPlatformerState_Current = GetPlayerPlatformerState_Idle ();
-    PlayerPlatformerState_Current.Pin()->ResetState (this);
-    PlayerPlatformerState_Current.Pin()->BeginState (this);
+    PlayerPlatformerState_FSM_Current = GetPlayerPlatformerState_FSM_Idle ();
+    PlayerPlatformerState_FSM_Current.Pin()->ResetState (this);
+    PlayerPlatformerState_FSM_Current.Pin()->BeginState (this);
 }
 
 // Called every frame
@@ -133,20 +133,20 @@ void AHeung_Character::UpdateKoyoteTime(float DeltaTime)
 
 void AHeung_Character::UpdateCharacterPlatformingState(float DeltaTime)
 {
-    if (PlayerPlatformerState_Current != NULL)
+    if (PlayerPlatformerState_FSM_Current != NULL)
     {
-        PlayerPlatformerState_Current.Pin()->TickState (this, DeltaTime, PlayerPlatformerState_Next);
+        PlayerPlatformerState_FSM_Current.Pin()->TickState (this, DeltaTime, PlayerPlatformerState_FSM_Next);
 
-        if (PlayerPlatformerState_Next != NULL)
+        if (PlayerPlatformerState_FSM_Next != NULL)
         {
-            PlayerPlatformerState_Current.Pin()->ExitState (this);
+            PlayerPlatformerState_FSM_Current.Pin()->ExitState (this);
             // delete PlayerPlatformerState_Current;
 
-            PlayerPlatformerState_Current = PlayerPlatformerState_Next;
-            PlayerPlatformerState_Current.Pin()->ResetState (this);
-            PlayerPlatformerState_Current.Pin()->BeginState (this);
+            PlayerPlatformerState_FSM_Current = PlayerPlatformerState_FSM_Next;
+            PlayerPlatformerState_FSM_Current.Pin()->ResetState (this);
+            PlayerPlatformerState_FSM_Current.Pin()->BeginState (this);
 
-            PlayerPlatformerState_Next = NULL;
+            PlayerPlatformerState_FSM_Next = NULL;
         }
     }
 }
@@ -216,20 +216,20 @@ void AHeung_Character::SetCapsuleHeightByPlatformingState (EHeung_PlatformerStat
         GetCapsuleComponent ()->SetCapsuleHalfHeight (CapsuleHeight_Common * 0.5);
         GetMesh ()->SetRelativeLocation (FVector (0, 0, SkeletalMeshHeight_Common));
 
-        if (CapsuleState_Current == EHeung_CapsuleState_Enum::E_STAND)
+        if (CapsuleState_Enum_Current == EHeung_CapsuleState_Enum::E_STAND)
         {
             SetActorLocation (GetActorLocation () + FVector (0, 0, (CapsuleHeight_Common-CapsuleHeight_Common) * 0.5));
         }
-        else if (CapsuleState_Current == EHeung_CapsuleState_Enum::E_CROUCH)
+        else if (CapsuleState_Enum_Current == EHeung_CapsuleState_Enum::E_CROUCH)
         {
             SetActorLocation (GetActorLocation () + FVector (0, 0, (CapsuleHeight_Common-CapsuleHeight_Crouch) * 0.5));
         }
-        else if (CapsuleState_Current == EHeung_CapsuleState_Enum::E_FALL)
+        else if (CapsuleState_Enum_Current == EHeung_CapsuleState_Enum::E_FALL)
         {
             SetActorLocation (GetActorLocation () + FVector (0, 0, (CapsuleHeight_Common-CapsuleHeight_Falling) * 0.5));
         }
 
-        CapsuleState_Current = EHeung_CapsuleState_Enum::E_STAND;
+        CapsuleState_Enum_Current = EHeung_CapsuleState_Enum::E_STAND;
         
         break;
 
@@ -238,20 +238,20 @@ void AHeung_Character::SetCapsuleHeightByPlatformingState (EHeung_PlatformerStat
         GetCapsuleComponent ()->SetCapsuleHalfHeight (CapsuleHeight_Falling * 0.5);
         GetMesh ()->SetRelativeLocation (FVector (0, 0, SkeletalMeshHeight_Falling));
 
-        if (CapsuleState_Current == EHeung_CapsuleState_Enum::E_STAND)
+        if (CapsuleState_Enum_Current == EHeung_CapsuleState_Enum::E_STAND)
         {
             SetActorLocation (GetActorLocation () + FVector (0, 0, (CapsuleHeight_Falling-CapsuleHeight_Common) * 0.5));
         }
-        else if (CapsuleState_Current == EHeung_CapsuleState_Enum::E_CROUCH)
+        else if (CapsuleState_Enum_Current == EHeung_CapsuleState_Enum::E_CROUCH)
         {
             SetActorLocation (GetActorLocation () + FVector (0, 0, (CapsuleHeight_Falling-CapsuleHeight_Crouch) * 0.5));
         }
-        else if (CapsuleState_Current == EHeung_CapsuleState_Enum::E_FALL)
+        else if (CapsuleState_Enum_Current == EHeung_CapsuleState_Enum::E_FALL)
         {
             SetActorLocation (GetActorLocation () + FVector (0, 0, (CapsuleHeight_Falling-CapsuleHeight_Falling) * 0.5));
         }
 
-        CapsuleState_Current = EHeung_CapsuleState_Enum::E_FALL;
+        CapsuleState_Enum_Current = EHeung_CapsuleState_Enum::E_FALL;
 
         break;
 
@@ -261,20 +261,20 @@ void AHeung_Character::SetCapsuleHeightByPlatformingState (EHeung_PlatformerStat
         GetCapsuleComponent ()->SetCapsuleHalfHeight (CapsuleHeight_Crouch * 0.5);
         GetMesh ()->SetRelativeLocation (FVector (0, 0, SkeletalMeshHeight_Crouch));
 
-        if (CapsuleState_Current == EHeung_CapsuleState_Enum::E_STAND)
+        if (CapsuleState_Enum_Current == EHeung_CapsuleState_Enum::E_STAND)
         {
             SetActorLocation (GetActorLocation () + FVector (0, 0, (CapsuleHeight_Crouch-CapsuleHeight_Common) * 0.5));
         }
-        else if (CapsuleState_Current == EHeung_CapsuleState_Enum::E_CROUCH)
+        else if (CapsuleState_Enum_Current == EHeung_CapsuleState_Enum::E_CROUCH)
         {
             SetActorLocation (GetActorLocation () + FVector (0, 0, (CapsuleHeight_Crouch-CapsuleHeight_Crouch) * 0.5));
         }
-        else if (CapsuleState_Current == EHeung_CapsuleState_Enum::E_FALL)
+        else if (CapsuleState_Enum_Current == EHeung_CapsuleState_Enum::E_FALL)
         {
             SetActorLocation (GetActorLocation () + FVector (0, 0, (CapsuleHeight_Crouch-CapsuleHeight_Falling) * 0.5));
         }
 
-        CapsuleState_Current = EHeung_CapsuleState_Enum::E_CROUCH;
+        CapsuleState_Enum_Current = EHeung_CapsuleState_Enum::E_CROUCH;
 
         break;
     }
@@ -282,8 +282,8 @@ void AHeung_Character::SetCapsuleHeightByPlatformingState (EHeung_PlatformerStat
 
 void AHeung_Character::Jump()
 {
-    if (PlatformingStateEnum_Current == EHeung_PlatformerState_Enum::E_IDLE
-    || PlatformingStateEnum_Current == EHeung_PlatformerState_Enum::E_FALL)
+    if (PlatformerState_Enum_Current == EHeung_PlatformerState_Enum::E_IDLE
+    || PlatformerState_Enum_Current == EHeung_PlatformerState_Enum::E_FALL)
     {
         Super::Jump ();
 
@@ -360,13 +360,13 @@ void AHeung_Character::InputAction_Release_Platforming_Crouch ()
     InputButton_Crouch = false;
 }
 
-TWeakPtr <PlayerPlatformerState_Idle> AHeung_Character::GetPlayerPlatformerState_Idle ()
+TWeakPtr <Heung_PlatformerState_FSM_Idle> AHeung_Character::GetPlayerPlatformerState_FSM_Idle ()
 {
-    if (PlayerPlatformerStateInst_Idle == NULL)
+    if (PlayerPlatformerState_FSM_Idle_Inst == NULL)
     {
         UE_LOG(LogTemp, Display, TEXT("Make SharedPTR: IDLE"));
 
-        PlayerPlatformerStateInst_Idle = MakeShared <PlayerPlatformerState_Idle>
+        PlayerPlatformerState_FSM_Idle_Inst = MakeShared <Heung_PlatformerState_FSM_Idle>
         (
             CrouchMinVelocityLength,
             BrakeXYSpeed_Active,
@@ -374,44 +374,44 @@ TWeakPtr <PlayerPlatformerState_Idle> AHeung_Character::GetPlayerPlatformerState
         );
     }
 
-    return PlayerPlatformerStateInst_Idle;
+    return PlayerPlatformerState_FSM_Idle_Inst;
 }
 
-TWeakPtr <PlayerPlatformerState_Fall> AHeung_Character::GetPlayerPlatformerState_Fall ()
+TWeakPtr <Heung_PlatformerState_FSM_Fall> AHeung_Character::GetPlayerPlatformerState_FSM_Fall ()
 {
-    if (PlayerPlatformerStateInst_Fall == NULL)
+    if (PlayerPlatformerState_FSM_Fall_Inst == NULL)
     {
-        PlayerPlatformerStateInst_Fall = MakeShared <PlayerPlatformerState_Fall> ();
+        PlayerPlatformerState_FSM_Fall_Inst = MakeShared <Heung_PlatformerState_FSM_Fall> ();
     }
 
-    return PlayerPlatformerStateInst_Fall; 
+    return PlayerPlatformerState_FSM_Fall_Inst; 
 }
 
-TWeakPtr <PlayerPlatformerState_Crouch> AHeung_Character::GetPlayerPlatformerState_Crouch ()
+TWeakPtr <Heung_PlatformerState_FSM_Crouch> AHeung_Character::GetPlayerPlatformerState_FSM_Crouch ()
 {
-    if (PlayerPlatformerStateInst_Crouch == NULL)
+    if (PlayerPlatformerState_FSM_Crouch_Inst == NULL)
     {
-        PlayerPlatformerStateInst_Crouch = MakeShared <PlayerPlatformerState_Crouch> (); 
+        PlayerPlatformerState_FSM_Crouch_Inst = MakeShared <Heung_PlatformerState_FSM_Crouch> (); 
     }
 
-    return PlayerPlatformerStateInst_Crouch;
+    return PlayerPlatformerState_FSM_Crouch_Inst;
 }
 
-TWeakPtr <PlayerPlatformerState_Slide> AHeung_Character::GetPlayerPlatformerState_Slide ()
+TWeakPtr <Heung_PlatformerState_FSM_Slide> AHeung_Character::GetPlayerPlatformerState_FSM_Slide ()
 {
-    if (PlayerPlatformerStateInst_Slide == NULL)
+    if (PlayerPlatformerState_FSM_Slide_Inst == NULL)
     {
-        PlayerPlatformerStateInst_Slide = MakeShared <PlayerPlatformerState_Slide> (SlideRate, SlideSpeed, SlideSpeed_Jump);
+        PlayerPlatformerState_FSM_Slide_Inst = MakeShared <Heung_PlatformerState_FSM_Slide> (SlideRate, SlideSpeed, SlideSpeed_Jump);
     }
 
-    return PlayerPlatformerStateInst_Slide;
+    return PlayerPlatformerState_FSM_Slide_Inst;
 }
 
-TWeakPtr <PlayerPlatformerState_Stomp> AHeung_Character::GetPlayerPlatformerState_Stomp ()
+TWeakPtr <Heung_PlatformerState_FSM_Stomp> AHeung_Character::GetPlayerPlatformerState_FSM_Stomp ()
 {
-    if (PlayerPlatformerStateInst_Stomp == NULL)
+    if (PlayerPlatformerState_FSM_Stomp_Inst == NULL)
     {
-        PlayerPlatformerStateInst_Stomp = MakeShared <PlayerPlatformerState_Stomp> 
+        PlayerPlatformerState_FSM_Stomp_Inst = MakeShared <Heung_PlatformerState_FSM_Stomp> 
         (
             StompRate_0,
             StompRate_1,
@@ -422,14 +422,14 @@ TWeakPtr <PlayerPlatformerState_Stomp> AHeung_Character::GetPlayerPlatformerStat
         );
     }
 
-    return PlayerPlatformerStateInst_Stomp;
+    return PlayerPlatformerState_FSM_Stomp_Inst;
 }
 
-TWeakPtr <PlayerPlatformerState_Brake> AHeung_Character::GetPlayerPlatformerState_Brake ()
+TWeakPtr <Heung_PlatformerState_FSM_Brake> AHeung_Character::GetPlayerPlatformerState_FSM_Brake ()
 {
-    if (PlayerPlatformerStateInst_Brake == NULL)
+    if (PlayerPlatformerState_FSM_Brake_Inst == NULL)
     {
-        PlayerPlatformerStateInst_Brake = MakeShared <PlayerPlatformerState_Brake> 
+        PlayerPlatformerState_FSM_Brake_Inst = MakeShared <Heung_PlatformerState_FSM_Brake> 
         (
             BrakeRate,
             BrakeXYSpeed_Begin,
@@ -437,14 +437,14 @@ TWeakPtr <PlayerPlatformerState_Brake> AHeung_Character::GetPlayerPlatformerStat
         );
     }
 
-    return PlayerPlatformerStateInst_Brake;
+    return PlayerPlatformerState_FSM_Brake_Inst;
 }
 
-TWeakPtr <PlayerPlatformerState_Hang> AHeung_Character::GetPlayerPlatformerState_Hang ()
+TWeakPtr <Heung_PlatformerState_FSM_Hang> AHeung_Character::GetPlayerPlatformerState_FSM_Hang ()
 {
-    if (PlayerPlatformerStateInst_Hang == NULL)
+    if (PlayerPlatformerState_FSM_Hang_Inst == NULL)
     {
-        PlayerPlatformerStateInst_Hang = MakeShared <PlayerPlatformerState_Hang> 
+        PlayerPlatformerState_FSM_Hang_Inst = MakeShared <Heung_PlatformerState_FSM_Hang> 
         (
             HangPointDetectLength_LaunchZVelocity
         );
@@ -456,7 +456,7 @@ TWeakPtr <PlayerPlatformerState_Hang> AHeung_Character::GetPlayerPlatformerState
     //     UE_LOG(LogTemp, Display, TEXT("HangPoint Actor: %s"), *HangPointActor->GetName());
     // }
     
-    return PlayerPlatformerStateInst_Hang;
+    return PlayerPlatformerState_FSM_Hang_Inst;
 }
 
 void AHeung_Character::AttachHangPointCompToActor ()

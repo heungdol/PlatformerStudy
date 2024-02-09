@@ -11,23 +11,23 @@
 class AHeung_Character;
 enum class EHeung_PlatformerState_Enum : uint8;
 
-class PlayerPlatformerState
+class Heung_PlatformerState_FSM
 {
 public:
-    PlayerPlatformerState() {}
-    virtual ~PlayerPlatformerState() {}
+    Heung_PlatformerState_FSM() {}
+    virtual ~Heung_PlatformerState_FSM() {}
 
     virtual void ResetState (AHeung_Character* Character) {}
 
     virtual void BeginState(AHeung_Character* Character) = 0; 
-    virtual void TickState(AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState) = 0; 
+    virtual void TickState(AHeung_Character* Character, float DeltaTime, TWeakPtr<Heung_PlatformerState_FSM>& NextState) = 0; 
     virtual void ExitState(AHeung_Character* Character) = 0; 
 };
 
-class PlayerPlatformerState_Idle : public PlayerPlatformerState
+class Heung_PlatformerState_FSM_Idle : public Heung_PlatformerState_FSM
 {
 public:
-    PlayerPlatformerState_Idle 
+    Heung_PlatformerState_FSM_Idle 
     (
         float CrouchVelocityLength, 
         float BrakeVelocityLength,
@@ -41,7 +41,7 @@ public:
     virtual void ResetState (AHeung_Character* Character) override {}
 
     virtual void BeginState(AHeung_Character* Character) override;
-    virtual void TickState(AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState) override;
+    virtual void TickState(AHeung_Character* Character, float DeltaTime, TWeakPtr<Heung_PlatformerState_FSM>& NextState) override;
     virtual void ExitState(AHeung_Character* Character) override;
 
 private:
@@ -51,13 +51,13 @@ private:
     float BrakeDirectionDot;
 };
 
-class PlayerPlatformerState_Fall : public PlayerPlatformerState
+class Heung_PlatformerState_FSM_Fall : public Heung_PlatformerState_FSM
 {
 public:
     virtual void ResetState (AHeung_Character* Character) override {}
 
 	virtual void BeginState (AHeung_Character* Character) override;
-	virtual void TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState) override;
+	virtual void TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<Heung_PlatformerState_FSM>& NextState) override;
 	virtual void ExitState (AHeung_Character* Character) override;
 
 private:
@@ -65,20 +65,20 @@ private:
     FRotator MeshWorldRotation;
 };
 
-class PlayerPlatformerState_Crouch : public PlayerPlatformerState
+class Heung_PlatformerState_FSM_Crouch : public Heung_PlatformerState_FSM
 {
 public:
     virtual void ResetState (AHeung_Character* Character) override {}
 
 	virtual void BeginState (AHeung_Character* Character) override;
-	virtual void TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState) override;
+	virtual void TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<Heung_PlatformerState_FSM>& NextState) override;
 	virtual void ExitState (AHeung_Character* Character) override;
 };
 
-class PlayerPlatformerState_Slide : public PlayerPlatformerState
+class Heung_PlatformerState_FSM_Slide : public Heung_PlatformerState_FSM
 {
 public:
-    PlayerPlatformerState_Slide 
+    Heung_PlatformerState_FSM_Slide 
     (
         float SlideRate, 
         float SlideSpeed,
@@ -95,7 +95,7 @@ public:
     }
 
 	virtual void BeginState (AHeung_Character* Character) override;
-	virtual void TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState) override;
+	virtual void TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<Heung_PlatformerState_FSM>& NextState) override;
 	virtual void ExitState (AHeung_Character* Character) override;
 
 private:
@@ -106,10 +106,10 @@ private:
     float SlideSpeed_Jump;
 };
 
-class PlayerPlatformerState_Stomp : public PlayerPlatformerState
+class Heung_PlatformerState_FSM_Stomp : public Heung_PlatformerState_FSM
 {
 public:
-    PlayerPlatformerState_Stomp 
+    Heung_PlatformerState_FSM_Stomp 
     (
         float StompRate_0, 
         float StompRate_1, 
@@ -133,7 +133,7 @@ public:
     }
 
 	virtual void BeginState (AHeung_Character* Character) override;
-	virtual void TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState) override;
+	virtual void TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<Heung_PlatformerState_FSM>& NextState) override;
 	virtual void ExitState (AHeung_Character* Character) override;
 
 private:
@@ -149,10 +149,10 @@ private:
     float StompZSpeed_Jump;
 };
 
-class PlayerPlatformerState_Brake : public PlayerPlatformerState
+class Heung_PlatformerState_FSM_Brake : public Heung_PlatformerState_FSM
 {
 public:
-    PlayerPlatformerState_Brake 
+    Heung_PlatformerState_FSM_Brake 
     (
         float BrakeRate,
         float BrakeSpeed_Max,
@@ -169,7 +169,7 @@ public:
     }
 
 	virtual void BeginState (AHeung_Character* Character) override;
-	virtual void TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState) override;
+	virtual void TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<Heung_PlatformerState_FSM>& NextState) override;
 	virtual void ExitState (AHeung_Character* Character) override;
 
 private:
@@ -182,10 +182,10 @@ private:
     FVector BrakeDirection;
 };
 
-class PlayerPlatformerState_Hang : public PlayerPlatformerState
+class Heung_PlatformerState_FSM_Hang : public Heung_PlatformerState_FSM
 {
 public:
-    PlayerPlatformerState_Hang (float HangJumpSpeed)//, AActor* A)
+    Heung_PlatformerState_FSM_Hang (float HangJumpSpeed)//, AActor* A)
     : HangJumpSpeed (HangJumpSpeed)
     // , HangPointActor (A)
     {}
@@ -193,7 +193,7 @@ public:
     virtual void ResetState (AHeung_Character* Character) override {}
 
 	virtual void BeginState (AHeung_Character* Character) override;
-	virtual void TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<PlayerPlatformerState>& NextState) override;
+	virtual void TickState (AHeung_Character* Character, float DeltaTime, TWeakPtr<Heung_PlatformerState_FSM>& NextState) override;
 	virtual void ExitState (AHeung_Character* Character) override;
 
     // void ChangeHangPointActor (AActor *A);
