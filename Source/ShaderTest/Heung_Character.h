@@ -195,6 +195,15 @@ protected:
 	UPROPERTY (VisibleAnywhere, BlueprintReadOnly, Category = HEUNG_COMMON)
 	bool IsDetectingDownward;
 
+	// UPROPERTY (VisibleAnywhere, BlueprintReadOnly, Category = HEUNG_COMMON)
+	// FVector CurrentFloorDirection_Front;
+
+	// UPROPERTY (VisibleAnywhere, BlueprintReadOnly, Category = HEUNG_COMMON)
+	// FVector CurrentFloorDirection_Right;
+	
+	// UPROPERTY (VisibleAnywhere, BlueprintReadOnly, Category = HEUNG_COMMON)
+	// FVector CurrentFloorDirection_Up;
+
 	//
 
 	UPROPERTY (VisibleAnywhere, BlueprintReadonly, Category = HEUNG_HANG)
@@ -310,7 +319,10 @@ protected:
 	
 	UFUNCTION (BlueprintImplementableEvent)
 	void UpdateDetectDirections (float DeltaTime, bool& Forward, bool& Rightward, bool& Backward, bool& Leftward, bool& Upward, bool& Downward);
-
+	
+	// UFUNCTION (BlueprintImplementableEvent)
+	// void UpdateCurrentFloorDirections (float DeltaTime, FVector& FrontVector, FVector& RightVector, FVector& UpVector);
+	
 	// ==========================================================================================
 
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_BRAKE)
@@ -338,10 +350,19 @@ protected:
 	float SlideRate = 0.5;
 	
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_SLIDE)
+	float SlideAngle = 15;
+
+	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_SLIDE)
 	float SlideSpeed = 1000;
 
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_SLIDE)
-	float SlideSpeed_Jump = 1000;
+	float SlideSpeed_Jump = 1600;
+	
+	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_SLIDE)
+	float SlideSpeed_Jump_Edge = 1000;
+
+	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_SLIDE)
+	float SlideSpeed_Down = -200;
 
 	// ==========================================================================================
 
@@ -449,6 +470,26 @@ public:
 		return IsDetectingDownward;
 	}
 
+	// =====================================================================
+
+	// UFUNCTION (BlueprintPure)
+	// FVector GetCurrentFloorDirection_Front () const
+	// {
+	// 	return CurrentFloorDirection_Front;
+	// }
+
+	// UFUNCTION (BlueprintPure)
+	// FVector GetCurrentFloorDirection_Right () const
+	// {
+	// 	return CurrentFloorDirection_Right;
+	// }
+
+	// UFUNCTION (BlueprintPure)
+	// FVector GetCurrentFloorDirection_Up () const
+	// {
+	// 	return CurrentFloorDirection_Up;
+	// }
+
 	// ======================================================================
 
 	UFUNCTION (BlueprintPure)
@@ -518,6 +559,12 @@ public:
 	{
 		return HangPointRotation;
 	}
+
+	UFUNCTION (BlueprintImplementableEvent)
+	FVector GetDirectionByCurrentFloor (const FVector& InputDirection);
+	
+	UFUNCTION (BlueprintImplementableEvent)
+	FVector GetCurrentFloorNormal ();
 
 	// ======================================================================
 

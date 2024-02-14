@@ -273,11 +273,17 @@ void Heung_PlatformerState_FSM_Slide::BeginState(AHeung_Character* Character)
         Character->GetCharacterMovement ()->bOrientRotationToMovement = true;
     }
 
+    // if (Character->GetCharacterMovement () != NULL)
+    // {
+    //     Character->GetCharacterMovement ()->bCanWalkOffLedges = false;
+    // }
+    
     Character->SetActorRotation (Character->GetInputAxisDirection ().Rotation ());
 
     if (Character->GetCharacterMovement () != NULL)
     {
-        Character->LaunchCharacter (Character->GetActorForwardVector () * SlideSpeed, true, false);
+        Character->LaunchCharacter (Character->GetDirectionByCurrentFloor (Character->GetInputAxisDirection ()) * SlideSpeed
+        + Character->GetCurrentFloorNormal() * SlideSpeed_Down, true, true);
     }
 
     SlideRate_Current = SlideRate;
@@ -300,16 +306,42 @@ void Heung_PlatformerState_FSM_Slide::TickState(AHeung_Character* Character, flo
         
         if (Character->GetCharacterMovement () != nullptr)
         {
+            Character->LaunchCharacter (FVector (0, 0, SlideSpeed_Jump_Edge), false, true);
+        }
+    }
+    else if (Character->GetInputButton_Jump () == true)
+    {
+        Character->SetInputButton_Jump (false);
+        
+        NextState = Character->GetPlayerPlatformerState_FSM_Fall ();
+        
+        if (Character->GetCharacterMovement () != nullptr)
+        {
             Character->LaunchCharacter (FVector (0, 0, SlideSpeed_Jump), false, true);
         }
     }
+
+    // if (Character->GetCharacterMovement () != nullptr)
+    // {
+    //     // UE_LOG(LogTemp, Display, TEXT("Velocity %f"), Character->GetVelocity ().Length ());
+    //     FVector NewVelocity = Character->GetDirectionByCurrentFloor (Character->GetActorForwardVector ()) * SlideSpeed;// * DeltaTime;
+    //     Character->GetCharacterMovement ()->Velocity = NewVelocity;
+    // }
 
     SlideRate_Current -= DeltaTime;
 }
 
 void Heung_PlatformerState_FSM_Slide::ExitState(AHeung_Character* Character)
 {
-    
+    if (Character == nullptr)
+    {
+        return;
+    }
+
+    // if (Character->GetCharacterMovement () != NULL)
+    // {
+    //     Character->GetCharacterMovement ()->bCanWalkOffLedges = true;
+    // }
 }
 
 // ============================================================================================================

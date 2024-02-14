@@ -52,6 +52,7 @@ void AHeung_Character::Tick(float DeltaTime)
     UpdateCapsulePeak (DeltaTime, IsDetectingCapsulePeak, DetectCapsulePeakNormal);
     UpdateSlidePeak (DeltaTime, IsDetectingSlidePeak);
     UpdateDetectDirections (DeltaTime, IsDetectingForward, IsDetectingRightward, IsDetectingBackward, IsDetectingLeftward, IsDetectingUpward, IsDetectingDownward);
+    // UpdateCurrentFloorDirections (DeltaTime, CurrentFloorDirection_Front, CurrentFloorDirection_Right, CurrentFloorDirection_Up);
 
     UpdateCharacterPlatformingState (DeltaTime);
 }
@@ -364,7 +365,7 @@ TWeakPtr <Heung_PlatformerState_FSM_Idle> AHeung_Character::GetPlayerPlatformerS
 {
     if (PlayerPlatformerState_FSM_Idle_Inst == NULL)
     {
-        UE_LOG(LogTemp, Display, TEXT("Make SharedPTR: IDLE"));
+        // UE_LOG(LogTemp, Display, TEXT("Make SharedPTR: IDLE"));
 
         PlayerPlatformerState_FSM_Idle_Inst = MakeShared <Heung_PlatformerState_FSM_Idle>
         (
@@ -401,7 +402,15 @@ TWeakPtr <Heung_PlatformerState_FSM_Slide> AHeung_Character::GetPlayerPlatformer
 {
     if (PlayerPlatformerState_FSM_Slide_Inst == NULL)
     {
-        PlayerPlatformerState_FSM_Slide_Inst = MakeShared <Heung_PlatformerState_FSM_Slide> (SlideRate, SlideSpeed, SlideSpeed_Jump);
+        PlayerPlatformerState_FSM_Slide_Inst = MakeShared <Heung_PlatformerState_FSM_Slide> 
+        (
+            SlideRate, 
+            SlideAngle, 
+            SlideSpeed, 
+            SlideSpeed_Jump,
+            SlideSpeed_Jump_Edge,
+            SlideSpeed_Down
+        );
     }
 
     return PlayerPlatformerState_FSM_Slide_Inst;

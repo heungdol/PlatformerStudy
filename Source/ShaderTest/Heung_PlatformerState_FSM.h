@@ -81,12 +81,18 @@ public:
     Heung_PlatformerState_FSM_Slide 
     (
         float SlideRate, 
+        float SlideAngle,
         float SlideSpeed,
-        float SlideSpeed_Jump
+        float SlideSpeed_Jump,
+        float SlideSpeed_Jump_Edge,
+        float SlideSpeed_Down
     ) 
     : SlideRate (SlideRate)
+    , SlideAngle (SlideAngle)
     , SlideSpeed (SlideSpeed) 
     , SlideSpeed_Jump (SlideSpeed_Jump)
+    , SlideSpeed_Jump_Edge (SlideSpeed_Jump_Edge)
+    , SlideSpeed_Down (SlideSpeed_Down)
     {}
 
     virtual void ResetState (AHeung_Character* Character) override 
@@ -102,8 +108,11 @@ private:
     float SlideRate_Current = 0;
     
     float SlideRate;
+    float SlideAngle;
     float SlideSpeed;
     float SlideSpeed_Jump;
+    float SlideSpeed_Jump_Edge;
+    float SlideSpeed_Down;
 };
 
 class Heung_PlatformerState_FSM_Stomp : public Heung_PlatformerState_FSM
