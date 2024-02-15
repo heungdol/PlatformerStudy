@@ -81,14 +81,16 @@ public:
     Heung_PlatformerState_FSM_Slide 
     (
         float SlideRate, 
-        float SlideAngle,
+        float SlideRate_Slope, 
+        float SlideAngleDot,
         float SlideSpeed,
         float SlideSpeed_Jump,
         float SlideSpeed_Jump_Edge,
         float SlideSpeed_Down
     ) 
     : SlideRate (SlideRate)
-    , SlideAngle (SlideAngle)
+    , SlideRate_Slope (SlideRate_Slope)
+    , SlideAngleDot (SlideAngleDot)
     , SlideSpeed (SlideSpeed) 
     , SlideSpeed_Jump (SlideSpeed_Jump)
     , SlideSpeed_Jump_Edge (SlideSpeed_Jump_Edge)
@@ -108,7 +110,8 @@ private:
     float SlideRate_Current = 0;
     
     float SlideRate;
-    float SlideAngle;
+    float SlideRate_Slope;
+    float SlideAngleDot;
     float SlideSpeed;
     float SlideSpeed_Jump;
     float SlideSpeed_Jump_Edge;

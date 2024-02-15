@@ -245,13 +245,13 @@ void Heung_PlatformerState_FSM_Slide::BeginState(AHeung_Character* Character)
         return;
     }
 
-    Character->ResetInputButtonDelay ();
+    // Character->ResetInputButtonDelay ();
+    // Character->SetInputButton_Crouch (false);
 
     Character->SetCharacterPlatformingState (EHeung_PlatformerState_Enum::E_SLIDE);
     Character->SetCharacterMovementValuesByPlatformingState (EHeung_PlatformerState_Enum::E_SLIDE);
     Character->SetCapsuleHeightByPlatformingState (EHeung_PlatformerState_Enum::E_SLIDE);
 
-    Character->SetInputButton_Crouch (false);
 
     if (Character->GetController () != NULL)
     {
@@ -280,11 +280,11 @@ void Heung_PlatformerState_FSM_Slide::BeginState(AHeung_Character* Character)
     
     Character->SetActorRotation (Character->GetInputAxisDirection ().Rotation ());
 
-    if (Character->GetCharacterMovement () != NULL)
-    {
-        Character->LaunchCharacter (Character->GetDirectionByCurrentFloor (Character->GetInputAxisDirection ()) * SlideSpeed
-        + Character->GetCurrentFloorNormal() * SlideSpeed_Down, true, true);
-    }
+    // if (Character->GetCharacterMovement () != NULL)
+    // {
+    //     Character->LaunchCharacter (Character->GetDirectionByCurrentFloor (Character->GetInputAxisDirection ()) * SlideSpeed
+    //     + Character->GetCurrentFloorNormal() * SlideSpeed_Down, true, true);
+    // }
 
     SlideRate_Current = SlideRate;
 }
@@ -321,6 +321,8 @@ void Heung_PlatformerState_FSM_Slide::TickState(AHeung_Character* Character, flo
         }
     }
 
+    Character->AddMovementInput (Character->GetActorForwardVector (), 1);
+
     // if (Character->GetCharacterMovement () != nullptr)
     // {
     //     // UE_LOG(LogTemp, Display, TEXT("Velocity %f"), Character->GetVelocity ().Length ());
@@ -329,6 +331,16 @@ void Heung_PlatformerState_FSM_Slide::TickState(AHeung_Character* Character, flo
     // }
 
     SlideRate_Current -= DeltaTime;
+
+    if (Character->GetInputButton_Crouch () == true)
+    {
+        FVector FloorDirection = Character->GetDirectionByCurrentFloor (Character->GetVelocityDirection ());
+
+        if (FVector::DotProduct (FloorDirection, FVector (0, 0, -1)) > SlideAngleDot)
+        {
+            SlideRate_Current = SlideRate_Slope;
+        }
+    }
 }
 
 void Heung_PlatformerState_FSM_Slide::ExitState(AHeung_Character* Character)
@@ -337,6 +349,9 @@ void Heung_PlatformerState_FSM_Slide::ExitState(AHeung_Character* Character)
     {
         return;
     }
+
+    Character->ResetInputButtonDelay ();
+    Character->SetInputButton_Crouch (false);
 
     // if (Character->GetCharacterMovement () != NULL)
     // {

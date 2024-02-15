@@ -172,6 +172,7 @@ void AHeung_Character::SetCharacterMovementValuesByPlatformingState (EHeung_Plat
 
         CharacterMovementComp->MaxWalkSpeed = MaxWalkSpeed_Common;
         CharacterMovementComp->GroundFriction = GroundFriction_Common;
+        CharacterMovementComp->MaxAcceleration = MaxAcceleration_Common;
         CharacterMovementComp->BrakingDecelerationWalking = BrakeDecelerationWalking_Common;
         CharacterMovementComp->RotationRate = RotationRate_Common;
         
@@ -181,6 +182,7 @@ void AHeung_Character::SetCharacterMovementValuesByPlatformingState (EHeung_Plat
 
         CharacterMovementComp->MaxWalkSpeed = MaxWalkSpeed_Crouch;
         CharacterMovementComp->GroundFriction = GroundFriction_Crouch;
+        CharacterMovementComp->MaxAcceleration = MaxAcceleration_Crouch;
         CharacterMovementComp->BrakingDecelerationWalking = BrakeDecelerationWalking_Crouch;
         CharacterMovementComp->RotationRate = RotationRate_Crouch;
 
@@ -190,6 +192,7 @@ void AHeung_Character::SetCharacterMovementValuesByPlatformingState (EHeung_Plat
 
         CharacterMovementComp->MaxWalkSpeed = MaxWalkSpeed_Sliding;
         CharacterMovementComp->GroundFriction = GroundFriction_Sliding;
+        CharacterMovementComp->MaxAcceleration = MaxAcceleration_Sliding;
         CharacterMovementComp->BrakingDecelerationWalking = BrakeDecelerationWalking_Sliding;
         CharacterMovementComp->RotationRate = RotationRate_Sliding;
 
@@ -405,7 +408,8 @@ TWeakPtr <Heung_PlatformerState_FSM_Slide> AHeung_Character::GetPlayerPlatformer
         PlayerPlatformerState_FSM_Slide_Inst = MakeShared <Heung_PlatformerState_FSM_Slide> 
         (
             SlideRate, 
-            SlideAngle, 
+            SlideRate_Slope,
+            SlideAngleDot, 
             SlideSpeed, 
             SlideSpeed_Jump,
             SlideSpeed_Jump_Edge,

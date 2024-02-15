@@ -109,7 +109,11 @@ protected:
 	FRotator RotationRate_Common = FRotator (0, 800, 0);
 
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_MOVEMENT_VALUE_WALK_BRAKE)
+	float MaxAcceleration_Common = 2000;
+
+	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_MOVEMENT_VALUE_WALK_BRAKE)
 	float BrakeDecelerationWalking_Common = 4000;
+
 	
 	//
 	
@@ -128,6 +132,9 @@ protected:
 	float GroundFriction_Crouch = 8; 
 
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_MOVEMENT_VALUE_CROUCH_SLIDE)
+	float MaxAcceleration_Crouch = 0;
+
+	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_MOVEMENT_VALUE_CROUCH_SLIDE)
 	float BrakeDecelerationWalking_Crouch = 4000; 
 
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_MOVEMENT_VALUE_CROUCH_SLIDE)
@@ -140,6 +147,9 @@ protected:
 
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_MOVEMENT_VALUE_CROUCH_SLIDE)
 	float GroundFriction_Sliding = 0; 
+
+	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_MOVEMENT_VALUE_CROUCH_SLIDE)
+	float MaxAcceleration_Sliding = 30000;
 
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_MOVEMENT_VALUE_CROUCH_SLIDE)
 	float BrakeDecelerationWalking_Sliding = 0; 
@@ -348,9 +358,12 @@ protected:
 	
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_SLIDE)
 	float SlideRate = 0.5;
+
+	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_SLIDE)
+	float SlideRate_Slope = 0.1;
 	
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_SLIDE)
-	float SlideAngle = 15;
+	float SlideAngleDot = 0.6;
 
 	UPROPERTY (EditAnywhere, BlueprintReadWrite, Category = HEUNG_SLIDE)
 	float SlideSpeed = 1000;
